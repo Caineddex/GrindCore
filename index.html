@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#000">
+<title>GRINDCORE</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;700&display=swap');
+:root{
+  --g1:#00ff88;--g2:#00e5cc;--g3:#007755;
+  --border:#00ff8830;--border2:#00ff8860;
+  --text:#d8ffe8;--muted:#6a9a7a;--danger:#ff3355;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{width:100%;height:100%;overflow:hidden;background:#000;color:var(--text);font-family:'Rajdhani',Arial,sans-serif}
+
+#splash{position:fixed;inset:0;z-index:9999;background:linear-gradient(135deg,#000 0%,#041a0e 40%,#002a18 70%,#000 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem}
+.sg{position:absolute;inset:0;opacity:.06;background-image:linear-gradient(var(--g3) 1px,transparent 1px),linear-gradient(90deg,var(--g3) 1px,transparent 1px);background-size:40px 40px}
+.so{position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,#00ff8812 0%,transparent 70%);animation:pulse 4s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:.5}50%{transform:scale(1.3);opacity:1}}
+.sl{width:1px;height:70px;background:linear-gradient(to bottom,transparent,var(--g1),transparent);animation:grow 2s ease-out forwards}
+@keyframes grow{from{height:0;opacity:0}to{height:70px;opacity:1}}
+.sm{font-family:'Bebas Neue',Impact,sans-serif;font-size:clamp(1.4rem,5vw,2.6rem);letter-spacing:.15em;color:var(--g1);text-align:center;text-shadow:0 0 40px #00ff8866;opacity:0;animation:fadeup 1.5s .2s forwards}
+@keyframes fadeup{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.se{padding:.8rem 3rem;border:1px solid var(--g1);background:transparent;color:var(--g1);font-family:'Bebas Neue',Impact,sans-serif;font-size:1.2rem;letter-spacing:.2em;cursor:pointer;opacity:0;animation:fadeup 1.5s .9s forwards;transition:background .3s}
+.se:hover{background:#00ff8818}
+
+#app{position:fixed;inset:0;display:none;flex-direction:column;background:linear-gradient(135deg,#000 0%,#031408 25%,#002a18 50%,#001a22 75%,#000 100%)}
+#app::before{content:'';position:absolute;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse at 15% 10%,#00ff8809 0%,transparent 50%),radial-gradient(ellipse at 85% 85%,#00e5cc07 0%,transparent 50%)}
+#app>*{position:relative;z-index:1}
+#app.active{display:flex}
+
+#nav{display:flex;align-items:center;justify-content:space-around;background:rgba(2,15,8,.9);backdrop-filter:blur(20px);border-top:1px solid var(--border);padding:.4rem 0;flex-shrink:0;order:2}
+.nb{display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:none;color:var(--muted);font-family:'Rajdhani',Arial,sans-serif;font-size:.62rem;font-weight:700;letter-spacing:.1em;cursor:pointer;padding:.35rem .7rem;transition:color .2s}
+.nb svg{width:22px;height:22px;stroke-width:1.5;fill:none;stroke:currentColor}
+.nb.active{color:var(--g1)}
+.nb.active svg{filter:drop-shadow(0 0 5px var(--g1))}
+
+#pages{flex:1;overflow:hidden;order:1;position:relative}
+.page{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;display:none;padding:1rem;padding-bottom:80px}
+.page.active{display:block}
+.page::-webkit-scrollbar{width:2px}
+.page::-webkit-scrollbar-thumb{background:var(--border2)}
+
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:.4rem 0 1rem;border-bottom:1px solid var(--border);margin-bottom:1rem}
+.topbar-t{font-family:'Bebas Neue',Impact,sans-serif;font-size:1.5rem;letter-spacing:.12em;color:var(--g1)}
+.topbar-s{font-size:.72rem;color:var(--muted)}
+
+.card{background:rgba(13,32,24,.7);border:1px solid var(--border);border-radius:4px;padding:.85rem;margin-bottom:.65rem}
+.csm{padding:.55rem}
+.cl{font-size:.62rem;letter-spacing:.15em;color:var(--muted);text-transform:uppercase;margin-bottom:.22rem}
+.cv{font-family:'Bebas Neue',Impact,sans-serif;font-size:2rem;color:var(--g1);line-height:1}
+.cvs{font-family:'Bebas Neue',Impact,sans-serif;font-size:1.2rem;color:var(--g1)}
+
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:.65rem;margin-bottom:.65rem}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.5rem;margin-bottom:.65rem}
+
+.sh{font-family:'Bebas Neue',Impact,sans-serif;font-size:.92rem;letter-spacing:.15em;color:var(--g2);margin:1rem 0 .4rem;display:flex;align-items:center;gap:.5rem}
+.sh::after{content:'';flex:1;height:1px;background:var(--border)}
+
+.pw{background:#0d2018;border-radius:2px;height:5px;overflow:hidden;margin:.3rem 0}
+.pb{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--g3),var(--g1));transition:width .6s ease}
+
+.lr{border-radius:50%;border:2px solid var(--g1);display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 0 18px #00ff8830;flex-shrink:0}
+
+.wg{display:flex;flex-wrap:wrap;gap:.4rem}
+.wc{width:32px;height:38px;border:1.5px solid var(--g3);border-radius:0 0 5px 5px;position:relative;overflow:hidden;cursor:pointer}
+.wc.f{border-color:var(--g2)}
+.wc.f::after{content:'';position:absolute;inset:0;background:#00cc9966}
+
+.btn{padding:.52rem 1.2rem;border:1px solid var(--g1);background:transparent;color:var(--g1);font-family:'Rajdhani',Arial,sans-serif;font-size:.8rem;font-weight:700;letter-spacing:.12em;cursor:pointer;border-radius:2px;transition:background .2s}
+.btn:hover{background:#00ff8815}
+.bd{border-color:var(--danger);color:var(--danger)}
+.bd:hover{background:#ff335515}
+.bb{width:100%;display:block}
+.bs{padding:.28rem .75rem;font-size:.7rem}
+
+input,select,textarea{background:rgba(7,21,16,.8);border:1px solid var(--border2);color:var(--text);font-family:'Rajdhani',Arial,sans-serif;font-size:.88rem;padding:.42rem .62rem;border-radius:2px;width:100%;outline:none}
+input:focus,select:focus{border-color:var(--g1)}
+select option{background:#071510}
+label{font-size:.7rem;letter-spacing:.1em;color:var(--muted);display:block;margin:.52rem 0 .16rem}
+
+.tabs{display:flex;border:1px solid var(--border);border-radius:3px;overflow:hidden;margin:.75rem 0}
+.tabbtn{flex:1;padding:.48rem 0;background:transparent;border:none;color:var(--muted);font-family:'Bebas Neue',Impact,sans-serif;font-size:.8rem;letter-spacing:.1em;cursor:pointer;border-right:1px solid var(--border);transition:all .2s}
+.tabbtn:last-child{border-right:none}
+.tabbtn.on{background:#00ff8820;color:var(--g1)}
+
+.wi{background:rgba(13,32,24,.7);border:1px solid var(--border);border-radius:3px;padding:.65rem;display:flex;align-items:flex-start;gap:.65rem;margin-bottom:.42rem;cursor:pointer;transition:border-color .2s}
+.wi:hover{border-color:var(--g3)}
+.wi.done{border-color:var(--g3);opacity:.55}
+.win{width:34px;height:34px;min-width:34px;border:1px solid var(--g3);border-radius:2px;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',Impact,sans-serif;font-size:.95rem;color:var(--g2)}
+.wii{flex:1;min-width:0}
+.wn{font-weight:700;font-size:.86rem}
+.wd{font-size:.7rem;color:var(--muted);margin-top:1px}
+.wo{font-size:.64rem;color:var(--g3);margin-top:2px;font-style:italic}
+.wck{width:19px;height:19px;min-width:19px;border:1.5px solid var(--g3);border-radius:50%;transition:background .2s;margin-top:2px}
+.wck.ok{background:var(--g1);border-color:var(--g1)}
+.tag{display:inline-block;padding:.1rem .42rem;border:1px solid var(--border2);border-radius:2px;font-size:.6rem;color:var(--muted);margin-right:.22rem}
+
+.pc{background:rgba(13,32,24,.7);border:1px solid var(--border);border-radius:4px;padding:.85rem;margin-bottom:.75rem}
+.pt{font-size:.68rem;color:var(--g3);line-height:1.45;border-left:2px solid var(--g3);padding-left:.48rem;margin-bottom:.5rem;font-style:italic}
+
+.mbar{position:fixed;bottom:58px;left:0;right:0;z-index:100;background:rgba(2,14,6,.95);border-top:1px solid var(--border);padding:.42rem 1rem;display:none}
+.mbar.vis{display:block}
+.mnm{font-size:.76rem;color:var(--g1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mc{display:flex;align-items:center;gap:.65rem;margin-top:.22rem}
+.mcb{background:none;border:none;color:var(--muted);cursor:pointer;padding:.12rem}
+.mcb:hover{color:var(--g1)}
+.mcb svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:2}
+.mp{flex:1;height:3px;background:#0d2018;border-radius:2px;cursor:pointer}
+.mpf{height:100%;background:var(--g1);border-radius:2px;transition:width .1s linear}
+
+.mbar2{display:flex;gap:.32rem;margin-bottom:.65rem}
+.mpill{flex:1;padding:.42rem .22rem;text-align:center;background:rgba(13,32,24,.7);border:1px solid var(--border);border-radius:3px}
+.mv{font-family:'Bebas Neue',Impact,sans-serif;font-size:1.1rem;color:var(--g1)}
+.ml2{font-size:.57rem;color:var(--muted)}
+
+.txi{display:flex;justify-content:space-between;align-items:center;padding:.52rem 0;border-bottom:1px solid var(--border)}
+.txamt{font-family:'Bebas Neue',Impact,sans-serif;font-size:1.02rem}
+.ti{color:var(--g1)}
+.te{color:var(--danger)}
+
+.achi{display:flex;align-items:center;gap:.65rem;padding:.52rem 0;border-bottom:1px solid var(--border)}
+.achic{width:32px;height:32px;border:1px solid var(--g3);border-radius:2px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.achlk{opacity:.25;filter:grayscale(1)}
+
+.td{font-family:'Bebas Neue',Impact,sans-serif;font-size:3rem;color:var(--g1);text-align:center;letter-spacing:.05em;text-shadow:0 0 25px #00ff8855}
+
+.mbg{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;padding:1rem}
+.mbg.open{display:flex}
+.mod{background:linear-gradient(135deg,#071510,#020e08);border:1px solid var(--border2);border-radius:4px;padding:1.35rem;width:100%;max-width:460px;max-height:85vh;overflow-y:auto}
+.mdt{font-family:'Bebas Neue',Impact,sans-serif;font-size:1.3rem;color:var(--g1);letter-spacing:.1em;margin-bottom:.85rem}
+.mdc{float:right;background:none;border:none;color:var(--muted);cursor:pointer;font-size:1.3rem;line-height:1}
+
+@media(min-width:900px){
+  #app{flex-direction:row}
+  #nav{flex-direction:column;width:66px;order:1;border-top:none;border-right:1px solid var(--border);padding:.8rem 0;justify-content:flex-start;gap:.4rem}
+  .nb{font-size:.52rem;padding:.52rem .22rem;width:100%}
+  #pages{order:2}
+  .mbar{bottom:0;left:66px}
+  .page{padding-bottom:1rem}
+}
+</style>
+</head>
+<body>
+
+<div id="splash">
+  <div class="sg"></div>
+  <div class="so"></div>
+  <div class="sl"></div>
+  <div class="sm">VOCE RECEBEU UMA NOVA CHANCE</div>
+  <button class="se" onclick="enterApp()">INICIAR</button>
+</div>
+
+<div id="app">
+  <div id="pages">
+
+    <div class="page active" id="p-home">
+      <div class="topbar">
+        <div><div class="topbar-t" id="greeting">BOM DIA</div><div class="topbar-s" id="today-date"></div></div>
+        <div class="lr" style="width:70px;height:70px">
+          <div style="font-family:'Bebas Neue',Impact,sans-serif;font-size:1.75rem;color:var(--g1);line-height:1" id="lvl-num">1</div>
+          <div style="font-size:.5rem;letter-spacing:.2em;color:var(--muted)">LEVEL</div>
+        </div>
+      </div>
+      <div class="card csm">
+        <div class="cl">XP ATE O PROXIMO LEVEL</div>
+        <div class="pw"><div class="pb" id="xp-bar" style="width:0%"></div></div>
+        <div style="display:flex;justify-content:space-between;margin-top:.14rem">
+          <span style="font-size:.66rem;color:var(--muted)" id="xp-cur">0 XP</span>
+          <span style="font-size:.66rem;color:var(--muted)" id="xp-max">100 XP</span>
+        </div>
+      </div>
+      <div class="sh">HIDRATACAO</div>
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:.9rem">
+          <div><div class="cl">COPOS HOJE</div><div class="cv" id="water-home">0</div><div style="font-size:.66rem;color:var(--muted)">meta: <span id="wgoal-d">8</span></div></div>
+          <div style="flex:1"><div class="wg" id="water-glasses"></div></div>
+        </div>
+        <div style="display:flex;gap:.45rem;margin-top:.65rem">
+          <button class="btn bs" onclick="addWater()">+ BEBER</button>
+          <button class="btn bs bd" onclick="removeWater()">- REMOVER</button>
+        </div>
+      </div>
+      <div class="sh">TREINO DE HOJE</div>
+      <div class="card"><div class="cl">SELECIONADO</div><div style="font-family:'Bebas Neue',Impact,sans-serif;font-size:1.05rem;color:var(--g1)" id="today-wk">NENHUM SELECIONADO</div></div>
+      <div class="sh">STATS DA SEMANA</div>
+      <div class="g3">
+        <div class="card csm"><div class="cl">TREINOS</div><div class="cvs" id="s-wk">0</div></div>
+        <div class="card csm"><div class="cl">STREAK</div><div class="cvs" id="s-str">0</div></div>
+        <div class="card csm"><div class="cl">KCAL</div><div class="cvs" id="s-kcal">0</div></div>
+      </div>
+      <div class="sh">FINANCEIRO</div>
+      <div class="g2">
+        <div class="card csm"><div class="cl">SALDO</div><div class="cv" id="bal-h" style="font-size:1.3rem">R$0</div></div>
+        <div class="card csm"><div class="cl">ESSE MES</div><div class="cv" id="inc-h" style="font-size:1.3rem;color:var(--g2)">R$0</div></div>
+      </div>
+    </div>
+
+    <div class="page" id="p-treinos">
+      <div class="topbar"><div class="topbar-t">TREINOS</div><button class="btn bs" onclick="openModal('m-bio')">BIOTIPO</button></div>
+      <div class="card csm" style="border-color:var(--g3)"><div class="cl">BIOTIPO ATUAL</div><div style="font-family:'Bebas Neue',Impact,sans-serif;font-size:1rem;color:var(--g2)" id="bio-disp">NAO DEFINIDO</div></div>
+      <div class="sh">TIMER DE TREINO</div>
+      <div class="card" style="text-align:center">
+        <div class="td" id="timer-d">00:00:00</div>
+        <div style="display:flex;gap:.65rem;justify-content:center;margin-top:.65rem">
+          <button class="btn bs" id="timer-btn" onclick="toggleTimer()">INICIAR</button>
+          <button class="btn bs bd" onclick="resetTimer()">RESETAR</button>
+        </div>
+      </div>
+      <div class="tabs">
+        <button class="tabbtn on" id="tab-academia" onclick="switchTab('academia')">ACADEMIA</button>
+        <button class="tabbtn" id="tab-casa" onclick="switchTab('casa')">CASA</button>
+        <button class="tabbtn" id="tab-custom" onclick="switchTab('custom')">MEU TREINO</button>
+      </div>
+      <div id="pane-academia"><div style="font-size:.7rem;color:var(--muted);margin-bottom:.55rem;line-height:1.5">Planos com equipamento completo de academia. Selecione um para definir como treino do dia.</div><div id="plans-academia"></div></div>
+      <div id="pane-casa" style="display:none"><div style="font-size:.7rem;color:var(--muted);margin-bottom:.55rem;line-height:1.5">Treinos sem equipamento ou com objetos domesticos. Para qualquer ambiente.</div><div id="plans-casa"></div></div>
+      <div id="pane-custom" style="display:none"><div style="font-size:.7rem;color:var(--muted);margin-bottom:.55rem;line-height:1.5">Monte seu proprio treino. Exercicios ficam salvos permanentemente.</div><div id="custom-list"></div><button class="btn bb" style="margin-top:.5rem" onclick="openModal('m-addex')">+ ADICIONAR EXERCICIO</button></div>
+    </div>
+
+    <div class="page" id="p-musica">
+      <div class="topbar"><div class="topbar-t">MUSICA</div></div>
+      <div class="card" style="text-align:center;padding:1.3rem">
+        <div style="font-size:.76rem;color:var(--muted);margin-bottom:.85rem;line-height:1.6">Carregue seus arquivos MP3. Ficam disponiveis durante a sessao.</div>
+        <button class="btn bb" onclick="document.getElementById('mp3in').click()">CARREGAR MP3</button>
+        <input type="file" id="mp3in" accept=".mp3,audio/*" multiple style="display:none" onchange="loadMP3(event)">
+      </div>
+      <div class="sh">BIBLIOTECA</div>
+      <div id="track-list"></div>
+      <div id="no-tracks" style="color:var(--muted);font-size:.76rem;text-align:center;padding:1.8rem 0">Nenhum arquivo carregado ainda</div>
+    </div>
+
+    <div class="page" id="p-dieta">
+      <div class="topbar"><div class="topbar-t">DIETA</div><button class="btn bs" onclick="openModal('m-dgoal')">META</button></div>
+      <div class="sh">MACROS HOJE</div>
+      <div class="mbar2">
+        <div class="mpill"><div class="mv" id="m-kcal">0</div><div class="ml2">KCAL</div><div class="pw" style="height:3px;margin-top:3px"><div class="pb" id="mp-kcal" style="width:0%"></div></div></div>
+        <div class="mpill"><div class="mv" id="m-prot">0g</div><div class="ml2">PROT</div><div class="pw" style="height:3px;margin-top:3px"><div class="pb" id="mp-prot" style="width:0%;background:linear-gradient(90deg,#3377ff,#55aaff)"></div></div></div>
+        <div class="mpill"><div class="mv" id="m-carb">0g</div><div class="ml2">CARB</div><div class="pw" style="height:3px;margin-top:3px"><div class="pb" id="mp-carb" style="width:0%;background:linear-gradient(90deg,#ffaa00,#ffdd55)"></div></div></div>
+        <div class="mpill"><div class="mv" id="m-fat">0g</div><div class="ml2">GORD</div><div class="pw" style="height:3px;margin-top:3px"><div class="pb" id="mp-fat" style="width:0%;background:linear-gradient(90deg,#ff5533,#ff8855)"></div></div></div>
+      </div>
+      <button class="btn bb" onclick="openModal('m-addmeal')">+ REGISTRAR REFEICAO</button>
+      <div class="sh">REFEICOES DE HOJE</div>
+      <div id="meal-list"></div>
+      <div class="sh">PLANOS POR BIOTIPO</div>
+      <div id="diet-plans"></div>
+    </div>
+
+    <div class="page" id="p-renda">
+      <div class="topbar"><div class="topbar-t">FINANCEIRO</div><button class="btn bs" onclick="openModal('m-addtx')">+ LANCAMENTO</button></div>
+      <div class="g2">
+        <div class="card csm"><div class="cl">SALDO TOTAL</div><div class="cv" id="bal-pg" style="font-size:1.25rem">R$0,00</div></div>
+        <div class="card csm"><div class="cl">ENTRADAS MES</div><div class="cv" id="inc-pg" style="font-size:1.25rem;color:var(--g2)">R$0,00</div></div>
+        <div class="card csm"><div class="cl">SAIDAS MES</div><div class="cv" id="exp-pg" style="font-size:1.25rem;color:var(--danger)">R$0,00</div></div>
+        <div class="card csm"><div class="cl">SALDO MES</div><div class="cv" id="balm-pg" style="font-size:1.25rem">R$0,00</div></div>
+      </div>
+      <div class="sh">META FINANCEIRA</div>
+      <div class="card csm">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.32rem">
+          <span class="cl" style="margin:0">META: R$<span id="fgoal-d">5000</span></span>
+          <button class="btn bs" onclick="openModal('m-fgoal')">EDITAR</button>
+        </div>
+        <div class="pw"><div class="pb" id="fprog" style="width:0%"></div></div>
+        <div style="font-size:.66rem;color:var(--muted);margin-top:.14rem"><span id="fpct">0</span>% da meta</div>
+      </div>
+      <div class="sh">HISTORICO</div>
+      <div id="tx-list"></div>
+    </div>
+
+    <div class="page" id="p-nivel">
+      <div class="topbar"><div class="topbar-t">EVOLUCAO</div></div>
+      <div class="card" style="text-align:center;padding:1.7rem 1rem">
+        <div class="lr" style="width:105px;height:105px;margin:0 auto .85rem">
+          <div style="font-family:'Bebas Neue',Impact,sans-serif;font-size:2.7rem;color:var(--g1);line-height:1" id="lvl-big">1</div>
+          <div style="font-size:.5rem;letter-spacing:.2em;color:var(--muted)">LEVEL</div>
+        </div>
+        <div style="font-family:'Bebas Neue',Impact,sans-serif;font-size:1.15rem;color:var(--g2)" id="lvl-title">NOVATO</div>
+        <div style="font-size:.7rem;color:var(--muted);margin-top:.22rem" id="lvl-xp">0 / 100 XP</div>
+        <div class="pw" style="margin:.65rem auto;max-width:270px;height:7px"><div class="pb" id="xp-bar2" style="width:0%"></div></div>
+      </div>
+      <div class="sh">COMO GANHAR XP</div>
+      <div class="card">
+        <div class="txi"><span>Completar treino</span><span class="txamt ti">+50 XP</span></div>
+        <div class="txi"><span>Beber 8 copos de agua</span><span class="txamt ti">+20 XP</span></div>
+        <div class="txi"><span>Registrar refeicao</span><span class="txamt ti">+10 XP</span></div>
+        <div class="txi" style="border:none"><span>Registrar lancamento</span><span class="txamt ti">+5 XP</span></div>
+      </div>
+      <div class="sh">CONQUISTAS</div>
+      <div id="ach-list"></div>
+    </div>
+
+  </div>
+
+  <nav id="nav">
+    <button class="nb active" onclick="goPage('home',this)">
+      <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>HOME
+    </button>
+    <button class="nb" onclick="goPage('treinos',this)">
+      <svg viewBox="0 0 24 24"><path d="M6.5 6.5h11M6.5 17.5h11M4 12h16M7 9.5V6.5M17 9.5V6.5M7 17.5v-3M17 17.5v-3"/></svg>TREINOS
+    </button>
+    <button class="nb" onclick="goPage('musica',this)">
+      <svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>MUSICA
+    </button>
+    <button class="nb" onclick="goPage('dieta',this)">
+      <svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>DIETA
+    </button>
+    <button class="nb" onclick="goPage('renda',this)">
+      <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>RENDA
+    </button>
+    <button class="nb" onclick="goPage('nivel',this)">
+      <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>NIVEL
+    </button>
+  </nav>
+</div>
+
+<div class="mbar" id="music-bar">
+  <div style="display:flex;align-items:center;gap:.48rem">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--g1)" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+    <div class="mnm" id="music-nm">-</div>
+  </div>
+  <div class="mc">
+    <button class="mcb" onclick="prevTrack()"><svg viewBox="0 0 24 24"><polygon points="19 20 9 12 19 4 19 20"/><line x1="5" y1="19" x2="5" y2="5"/></svg></button>
+    <button class="mcb" onclick="togglePlay()"><svg viewBox="0 0 24 24" id="play-icon"><polygon points="5 3 19 12 5 21 5 3"/></svg></button>
+    <button class="mcb" onclick="nextTrack()"><svg viewBox="0 0 24 24"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/></svg></button>
+    <div class="mp" id="mprog" onclick="seekTrack(event)"><div class="mpf" id="mpf" style="width:0%"></div></div>
+    <span style="font-size:.6rem;color:var(--muted);white-space:nowrap" id="mtime">0:00</span>
+  </div>
+</div>
+
+<div class="mbg" id="m-bio"><div class="mod"><button class="mdc" onclick="closeModal('m-bio')">x</button><div class="mdt">SELECIONAR BIOTIPO</div><label>Biotipo</label><select id="bio-sel"><option value="">Selecione...</option><option value="ectomorfo">Ectomorfo - magro, dificuldade de ganhar massa</option><option value="mesomorfo">Mesomorfo - atletico, ganha e perde com facilidade</option><option value="endomorfo">Endomorfo - tende a acumular gordura</option><option value="ecto-meso">Ecto-Mesomorfo - magro com potencial atletico</option><option value="meso-endo">Meso-Endomorfo - atletico mas acumula gordura</option><option value="ecto-endo">Ecto-Endomorfo - metabolismo irregular</option></select><div style="margin-top:.9rem"><button class="btn bb" onclick="saveBiotipo()">SALVAR</button></div></div></div>
+<div class="mbg" id="m-addex"><div class="mod"><button class="mdc" onclick="closeModal('m-addex')">x</button><div class="mdt">ADICIONAR EXERCICIO</div><label>Nome</label><input type="text" id="ex-nm" placeholder="ex: Supino Reto"><label>Series x Repeticoes</label><input type="text" id="ex-sets" placeholder="ex: 4x12"><label>Grupo Muscular</label><input type="text" id="ex-grp" placeholder="ex: Peito"><div style="margin-top:.9rem"><button class="btn bb" onclick="addExercise()">ADICIONAR</button></div></div></div>
+<div class="mbg" id="m-addmeal"><div class="mod"><button class="mdc" onclick="closeModal('m-addmeal')">x</button><div class="mdt">REGISTRAR REFEICAO</div><label>Nome</label><input type="text" id="meal-nm" placeholder="ex: Almoco"><label>Kcal</label><input type="number" id="meal-kcal" placeholder="0"><label>Proteina (g)</label><input type="number" id="meal-prot" placeholder="0"><label>Carboidrato (g)</label><input type="number" id="meal-carb" placeholder="0"><label>Gordura (g)</label><input type="number" id="meal-fat" placeholder="0"><div style="margin-top:.9rem"><button class="btn bb" onclick="addMeal()">REGISTRAR</button></div></div></div>
+<div class="mbg" id="m-dgoal"><div class="mod"><button class="mdc" onclick="closeModal('m-dgoal')">x</button><div class="mdt">META DIARIA</div><label>Kcal alvo</label><input type="number" id="g-kcal" value="2000"><label>Proteina (g)</label><input type="number" id="g-prot" value="150"><label>Carboidrato (g)</label><input type="number" id="g-carb" value="250"><label>Gordura (g)</label><input type="number" id="g-fat" value="65"><div style="margin-top:.9rem"><button class="btn bb" onclick="saveDietGoal()">SALVAR</button></div></div></div>
+<div class="mbg" id="m-addtx"><div class="mod"><button class="mdc" onclick="closeModal('m-addtx')">x</button><div class="mdt">NOVO LANCAMENTO</div><label>Tipo</label><select id="tx-type"><option value="income">Entrada</option><option value="expense">Saida</option></select><label>Descricao</label><input type="text" id="tx-desc" placeholder="ex: Salario"><label>Valor (R$)</label><input type="number" id="tx-val" placeholder="0,00" step="0.01"><div style="margin-top:.9rem"><button class="btn bb" onclick="addTx()">LANCAR</button></div></div></div>
+<div class="mbg" id="m-fgoal"><div class="mod"><button class="mdc" onclick="closeModal('m-fgoal')">x</button><div class="mdt">META FINANCEIRA</div><label>Valor (R$)</label><input type="number" id="fgoal-i" placeholder="5000"><div style="margin-top:.9rem"><button class="btn bb" onclick="saveFinGoal()">SALVAR</button></div></div></div>
+
+<audio id="audio"></audio>
+<script>
+
+// STATE
+var DEF={level:1,xp:0,biotipo:'',waterCount:0,waterGoal:8,workoutsDone:0,streak:0,lastWorkoutDate:'',totalKcal:0,meals:[],transactions:[],customExercises:[],completedExercises:[],todayWorkout:'',dietGoal:{kcal:2000,prot:150,carb:250,fat:65},finGoal:5000,achievements:{},lastSaveDate:''};
+var S=null;
+try{var raw=localStorage.getItem('grindcore_v5');S=raw?JSON.parse(raw):null;}catch(e){S=null;}
+if(!S)S=JSON.parse(JSON.stringify(DEF));
+Object.keys(DEF).forEach(function(k){if(S[k]===undefined)S[k]=DEF[k];});
+var todayStr=new Date().toDateString();
+if(S.lastSaveDate!==todayStr){S.waterCount=0;S.meals=[];S.completedExercises=[];S.lastSaveDate=todayStr;save();}
+function save(){try{localStorage.setItem('grindcore_v5',JSON.stringify(S));}catch(e){}}
+
+// WORKOUT DATA
+var WK={
+  academia:{
+    ectomorfo:[
+      {name:'Massa A - Peito + Triceps',tip:'Carga progressiva. Descanso 90s entre series.',ex:[
+        {n:'Supino Reto com Barra',s:'5x6',g:'Peito',o:'Carga pesada, amplitude total'},
+        {n:'Supino Inclinado Halter',s:'4x8',g:'Peito',o:'Controle na descida'},
+        {n:'Crossover na Polia',s:'3x12',g:'Peito',o:'Espreme no final'},
+        {n:'Triceps Pulley Corda',s:'4x10',g:'Triceps',o:'Cotovelo fixo'},
+        {n:'Triceps Testa EZ',s:'3x10',g:'Triceps',o:'Nao abra os cotovelos'},
+        {n:'Mergulho entre Barras',s:'3x12',g:'Triceps',o:'Adicione peso se possivel'}]},
+      {name:'Massa B - Costas + Biceps',tip:'Puxadas sao prioridade. Use straps se necessario.',ex:[
+        {n:'Puxada Frontal Aberta',s:'5x6',g:'Costas',o:'Puxe ate o peito'},
+        {n:'Remada Curvada com Barra',s:'4x8',g:'Costas',o:'Tronco a 45 graus'},
+        {n:'Remada Unilateral Halter',s:'3x10',g:'Costas',o:'Rotacao leve no topo'},
+        {n:'Serrote com Halter',s:'3x12',g:'Costas',o:'Cotovelo bem alto'},
+        {n:'Rosca Direta com Barra',s:'4x10',g:'Biceps',o:'Sem balanco de tronco'},
+        {n:'Rosca Martelo Alternada',s:'3x12',g:'Biceps',o:'Supinacao no topo'}]},
+      {name:'Massa C - Pernas + Core',tip:'Agachamento e rei. Nunca pule o posterior.',ex:[
+        {n:'Agachamento Livre',s:'5x6',g:'Quadriceps',o:'Abaixo de 90 graus'},
+        {n:'Leg Press 45 graus',s:'4x10',g:'Quadriceps',o:'Pes na largura do ombro'},
+        {n:'Cadeira Extensora',s:'3x12',g:'Quadriceps',o:'Pausa no topo'},
+        {n:'Mesa Flexora',s:'3x12',g:'Posterior',o:'Controle na descida'},
+        {n:'Stiff com Barra',s:'3x10',g:'Posterior',o:'Joelhos levemente flexionados'},
+        {n:'Panturrilha em Pe',s:'5x15',g:'Panturrilha',o:'Amplitude total'}]},
+      {name:'Massa D - Ombros + Trapezio',tip:'Volume alto em ombros acelera o visual do corpo.',ex:[
+        {n:'Desenvolvimento com Halter',s:'4x8',g:'Ombro',o:'Nao trave no topo'},
+        {n:'Elevacao Lateral',s:'4x12',g:'Ombro Lateral',o:'Polegar para baixo'},
+        {n:'Elevacao Frontal com Anilha',s:'3x12',g:'Ombro Frontal',o:'Ate a altura do ombro'},
+        {n:'Facepull na Polia',s:'3x15',g:'Ombro Posterior',o:'Puxar na altura do rosto'},
+        {n:'Encolhimento com Halteres',s:'4x12',g:'Trapezio',o:'Giro leve no topo'}]}],
+    mesomorfo:[
+      {name:'Push - Peito + Ombro + Triceps',tip:'Volume moderado, intensidade alta.',ex:[
+        {n:'Supino Reto',s:'4x10',g:'Peito',o:'Ultima serie drop-set'},
+        {n:'Supino Inclinado Halter',s:'3x10',g:'Peito',o:''},
+        {n:'Crucifixo Peck Deck',s:'3x12',g:'Peito',o:''},
+        {n:'Desenvolvimento Halter',s:'4x10',g:'Ombro',o:''},
+        {n:'Elevacao Lateral',s:'3x15',g:'Ombro Lateral',o:''},
+        {n:'Triceps Pulley',s:'3x12',g:'Triceps',o:''},
+        {n:'Mergulho entre Barras',s:'3x10',g:'Triceps',o:''}]},
+      {name:'Pull - Costas + Biceps',tip:'Conexao mente-musculo. Sinta cada contracao.',ex:[
+        {n:'Puxada Frontal',s:'4x10',g:'Costas',o:''},
+        {n:'Remada Curvada',s:'4x10',g:'Costas',o:''},
+        {n:'Puxada Neutra',s:'3x12',g:'Costas',o:''},
+        {n:'Rosca Direta',s:'3x12',g:'Biceps',o:''},
+        {n:'Rosca Concentrada',s:'3x12',g:'Biceps',o:''},
+        {n:'Facepull',s:'3x15',g:'Ombro Posterior',o:''}]},
+      {name:'Legs + Core',tip:'Pernas fortes sao a base de tudo. Nunca pule.',ex:[
+        {n:'Agachamento Livre',s:'4x10',g:'Quadriceps',o:''},
+        {n:'Leg Press',s:'4x12',g:'Quadriceps',o:''},
+        {n:'Afundo com Halteres',s:'3x12',g:'Quadriceps',o:''},
+        {n:'Stiff com Barra',s:'4x10',g:'Posterior',o:''},
+        {n:'Panturrilha em Pe',s:'4x15',g:'Panturrilha',o:''},
+        {n:'Abdominal Infra',s:'3x20',g:'Core',o:''}]}],
+    endomorfo:[
+      {name:'Circuito Metabolico A',tip:'Descanso de 30s entre exercicios. Alta queima.',ex:[
+        {n:'Agachamento com Salto',s:'4x15',g:'Full Body',o:'Explosivo no salto'},
+        {n:'Supino com Barra',s:'4x12',g:'Peito',o:''},
+        {n:'Remada com Halter',s:'4x12',g:'Costas',o:''},
+        {n:'Desenvolvimento Halter',s:'4x12',g:'Ombro',o:''},
+        {n:'Esteira Inclinada',s:'1x15min',g:'Cardio',o:'Inclinacao 8-12%'},
+        {n:'Abdominal',s:'4x25',g:'Core',o:''}]},
+      {name:'HIIT + Forca B',tip:'HIIT primeiro, forca depois. Queima alta por horas.',ex:[
+        {n:'HIIT Bike ou Esteira',s:'1x20min',g:'Cardio',o:'30s sprint / 30s descanso'},
+        {n:'Leg Press',s:'4x15',g:'Pernas',o:''},
+        {n:'Puxada Frontal',s:'4x12',g:'Costas',o:''},
+        {n:'Supino Inclinado',s:'4x12',g:'Peito',o:''},
+        {n:'Rosca Direta',s:'3x15',g:'Biceps',o:''},
+        {n:'Triceps Corda',s:'3x15',g:'Triceps',o:''},
+        {n:'Prancha',s:'3x45s',g:'Core',o:''}]},
+      {name:'Full Body Definicao C',tip:'Full body com descanso curto. Foco em definicao.',ex:[
+        {n:'Agachamento com Barra',s:'4x12',g:'Pernas',o:''},
+        {n:'Supino Reto',s:'4x12',g:'Peito',o:''},
+        {n:'Puxada Neutra',s:'4x12',g:'Costas',o:''},
+        {n:'Desenvolvimento Militar',s:'3x12',g:'Ombro',o:''},
+        {n:'Stiff',s:'3x12',g:'Posterior',o:''},
+        {n:'Panturrilha',s:'3x20',g:'Panturrilha',o:''},
+        {n:'Cardio Leve',s:'1x20min',g:'Cardio',o:''}]}],
+    'ecto-meso':[
+      {name:'Forca Maxima A',tip:'Carga alta, repeticoes baixas. Recuperacao total.',ex:[
+        {n:'Agachamento Livre',s:'5x5',g:'Pernas',o:'Carga maxima com forma perfeita'},
+        {n:'Supino Reto',s:'5x5',g:'Peito',o:''},
+        {n:'Levantamento Terra',s:'3x5',g:'Full Body',o:'Tecnica perfeita acima de tudo'},
+        {n:'Desenvolvimento Militar',s:'4x6',g:'Ombro',o:''},
+        {n:'Rosca Direta',s:'3x8',g:'Biceps',o:''}]},
+      {name:'Hipertrofia B',tip:'Hipertrofia pura. Bombeamento total. Descanso 60-75s.',ex:[
+        {n:'Puxada Frontal',s:'4x10',g:'Costas',o:''},
+        {n:'Supino Inclinado Halter',s:'4x10',g:'Peito',o:''},
+        {n:'Elevacao Lateral',s:'4x12',g:'Ombro Lateral',o:''},
+        {n:'Leg Press',s:'4x12',g:'Pernas',o:''},
+        {n:'Rosca Martelo',s:'3x12',g:'Biceps',o:''},
+        {n:'Triceps Testa',s:'3x12',g:'Triceps',o:''}]}],
+    'meso-endo':[
+      {name:'Forca + Queima A',tip:'Forca pesada no inicio, cardio para finalizar.',ex:[
+        {n:'Supino Reto',s:'4x8',g:'Peito',o:''},
+        {n:'Agachamento',s:'4x8',g:'Pernas',o:''},
+        {n:'Puxada Frontal',s:'4x8',g:'Costas',o:''},
+        {n:'Desenvolvimento',s:'3x10',g:'Ombro',o:''},
+        {n:'Cardio Moderado',s:'1x20min',g:'Cardio',o:'Zona de queima de gordura'}]},
+      {name:'Circuito Metabolico B',tip:'Descanso curto para manter metabolismo acelerado.',ex:[
+        {n:'Levantamento Terra',s:'4x6',g:'Full Body',o:''},
+        {n:'Burpee com Halter',s:'3x12',g:'Full Body',o:''},
+        {n:'Remada Curvada',s:'4x10',g:'Costas',o:''},
+        {n:'Afundo com Barra',s:'3x12',g:'Pernas',o:''},
+        {n:'Abdominal Funcional',s:'3x20',g:'Core',o:''},
+        {n:'Corrida',s:'1x20min',g:'Cardio',o:''}]}],
+    'ecto-endo':[
+      {name:'Equilibrio A - Full Body',tip:'Consistencia e a chave. Regularidade supera intensidade.',ex:[
+        {n:'Supino Inclinado Halter',s:'3x12',g:'Peito',o:''},
+        {n:'Puxada Frontal',s:'3x12',g:'Costas',o:''},
+        {n:'Leg Press',s:'4x12',g:'Pernas',o:''},
+        {n:'Desenvolvimento',s:'3x12',g:'Ombro',o:''},
+        {n:'Stiff',s:'3x12',g:'Posterior',o:''},
+        {n:'Esteira Caminhada',s:'1x20min',g:'Cardio',o:'Ritmo constante'}]},
+      {name:'Funcional B',tip:'Exercicios compostos para regular o metabolismo.',ex:[
+        {n:'Agachamento com Halter',s:'4x12',g:'Pernas',o:''},
+        {n:'Remada com Halter',s:'3x12',g:'Costas',o:''},
+        {n:'Supino com Halter',s:'3x12',g:'Peito',o:''},
+        {n:'Elevacao Lateral',s:'3x15',g:'Ombro',o:''},
+        {n:'Prancha',s:'3x30s',g:'Core',o:''},
+        {n:'Bike Ergometrica',s:'1x15min',g:'Cardio',o:''}]}]},
+  casa:{
+    ectomorfo:[
+      {name:'Casa A - Peito + Triceps',tip:'Use mochila com livros para adicionar carga progressiva.',ex:[
+        {n:'Flexao Diamante',s:'4x10',g:'Triceps/Peito',o:'Maos proximas, cotovelos para tras'},
+        {n:'Flexao Inclinada (pes elevados)',s:'4x12',g:'Peito Superior',o:'Pes na cadeira ou cama'},
+        {n:'Flexao Archer',s:'3x8',g:'Peito',o:'Alterna o lado de carga lentamente'},
+        {n:'Pike Push Up',s:'4x10',g:'Ombro',o:'Quadril alto, cabeca para baixo'},
+        {n:'Mergulho entre Cadeiras',s:'4x12',g:'Triceps',o:'Pernas estendidas para dificultar'},
+        {n:'Extensao Triceps no Chao',s:'3x12',g:'Triceps',o:''}]},
+      {name:'Casa B - Costas + Biceps',tip:'Barra de porta muda tudo. Remada invertida na mesa tambem funciona.',ex:[
+        {n:'Remada Invertida na Mesa',s:'4x10',g:'Costas',o:'Peito toca a mesa'},
+        {n:'Barra Fixa Pegada Aberta',s:'4x8',g:'Costas',o:''},
+        {n:'Barra Fixa Supinada',s:'3x10',g:'Costas/Biceps',o:''},
+        {n:'Rosca com Garrafa 5L',s:'4x15',g:'Biceps',o:'Garrafas cheias como peso'},
+        {n:'Rosca 21',s:'3x21',g:'Biceps',o:'7 baixo + 7 alto + 7 completo'},
+        {n:'Superman no Chao',s:'3x15',g:'Lombar',o:''}]},
+      {name:'Casa C - Pernas',tip:'Agachamento unilateral e tao eficaz quanto leg press.',ex:[
+        {n:'Agachamento Bulgaro',s:'4x10',g:'Quadriceps',o:'Pe traseiro na cadeira'},
+        {n:'Agachamento Sumo com Mochila',s:'4x12',g:'Quadriceps',o:''},
+        {n:'Afundo em Caminhada',s:'3x12',g:'Quadriceps',o:''},
+        {n:'Good Morning',s:'3x15',g:'Posterior',o:''},
+        {n:'Hip Thrust (costas na cadeira)',s:'4x15',g:'Gluteo',o:''},
+        {n:'Panturrilha no Degrau Unilateral',s:'5x20',g:'Panturrilha',o:'Amplitude maxima'}]}],
+    mesomorfo:[
+      {name:'Push Casa - Peito + Ombro + Triceps',tip:'Varie o angulo das maos para atingir diferentes regioes.',ex:[
+        {n:'Flexao de Bracos',s:'4x15',g:'Peito',o:''},
+        {n:'Flexao Inclinada (pes elevados)',s:'3x15',g:'Peito Superior',o:''},
+        {n:'Flexao Declinada',s:'3x15',g:'Peito Inferior',o:''},
+        {n:'Pike Push Up',s:'4x12',g:'Ombro',o:''},
+        {n:'Mergulho no Banco',s:'4x15',g:'Triceps',o:''},
+        {n:'Triceps no Chao',s:'3x12',g:'Triceps',o:''}]},
+      {name:'Pull Casa - Costas + Biceps',tip:'Invista em barra de porta. Muda completamente o treino em casa.',ex:[
+        {n:'Barra Fixa Pegada Aberta',s:'4x10',g:'Costas',o:''},
+        {n:'Barra Fixa Supinada',s:'3x10',g:'Costas/Biceps',o:''},
+        {n:'Remada Invertida na Mesa',s:'4x12',g:'Costas',o:''},
+        {n:'Rosca com Garrafa Pesada',s:'3x15',g:'Biceps',o:''},
+        {n:'Rosca Isometrica',s:'3x30s',g:'Biceps',o:'Segura na metade'},
+        {n:'Superman Alternado',s:'3x15',g:'Lombar',o:''}]},
+      {name:'Legs Casa + Core',tip:'Intensidade supre falta de peso.',ex:[
+        {n:'Agachamento com Salto',s:'4x15',g:'Pernas',o:''},
+        {n:'Agachamento Bulgaro',s:'3x12',g:'Quadriceps',o:''},
+        {n:'Hip Thrust no Chao',s:'4x15',g:'Gluteo',o:''},
+        {n:'Afundo Lateral',s:'3x12',g:'Pernas',o:''},
+        {n:'Abdominal Bicicleta',s:'3x30',g:'Core',o:''},
+        {n:'Panturrilha Unilateral no Degrau',s:'4x15',g:'Panturrilha',o:''}]}],
+    endomorfo:[
+      {name:'HIIT Casa A',tip:'Sem descanso entre exercicios. 60s de descanso por rodada.',ex:[
+        {n:'Burpee Completo',s:'5x15',g:'Full Body',o:'Com salto e flexao'},
+        {n:'Mountain Climber',s:'4x30s',g:'Core/Cardio',o:'Velocidade maxima'},
+        {n:'Agachamento com Salto',s:'4x20',g:'Pernas',o:''},
+        {n:'Flexao Rapida',s:'4x15',g:'Peito',o:''},
+        {n:'Jumping Jacks',s:'4x40',g:'Cardio',o:''},
+        {n:'Abdominal',s:'4x25',g:'Core',o:''}]},
+      {name:'Circuito Funcional B',tip:'Cronometre o tempo total e bata o record a cada semana.',ex:[
+        {n:'Corrida no Lugar',s:'5x30s',g:'Cardio',o:'Joelhos altos'},
+        {n:'Flexao de Bracos',s:'4x15',g:'Peito',o:''},
+        {n:'Remada Invertida Mesa',s:'4x15',g:'Costas',o:''},
+        {n:'Afundo Alternado',s:'4x20',g:'Pernas',o:''},
+        {n:'Prancha',s:'4x45s',g:'Core',o:''},
+        {n:'Hip Thrust',s:'4x20',g:'Gluteo',o:''}]},
+      {name:'Cardio + Forca Casa C',tip:'Intercale cardio e forca. Metabolismo em chamas.',ex:[
+        {n:'Pular Corda (ou simular)',s:'5x2min',g:'Cardio',o:''},
+        {n:'Agachamento Sumo',s:'4x15',g:'Pernas',o:''},
+        {n:'Pike Push Up',s:'4x12',g:'Ombro',o:''},
+        {n:'Superman',s:'3x15',g:'Lombar',o:''},
+        {n:'Bicicleta Abdominal',s:'3x30',g:'Core',o:''},
+        {n:'Caminhada Rapida',s:'1x20min',g:'Cardio',o:''}]}],
+    'ecto-meso':[
+      {name:'Forca Casa A - Superior',tip:'Progressao de carga com objetos domesticos.',ex:[
+        {n:'Flexao Archer',s:'5x6',g:'Peito',o:'Transicao lenta e controlada'},
+        {n:'Barra Fixa Pegada Aberta',s:'5x6',g:'Costas',o:''},
+        {n:'Pike Push Up',s:'4x8',g:'Ombro',o:''},
+        {n:'Mergulho Cadeiras com Mochila',s:'4x10',g:'Triceps',o:''},
+        {n:'Rosca com Mochila Carregada',s:'3x12',g:'Biceps',o:''}]},
+      {name:'Forca Casa B - Inferior + Core',tip:'Unilateral e o segredo da forca sem equipamento.',ex:[
+        {n:'Agachamento Bulgaro com Mochila',s:'4x8',g:'Quadriceps',o:''},
+        {n:'Afundo Caminhando',s:'4x12',g:'Pernas',o:''},
+        {n:'Good Morning com Mochila',s:'3x15',g:'Posterior',o:''},
+        {n:'Agachamento com Pausa 3s',s:'4x10',g:'Quadriceps',o:''},
+        {n:'Prancha com Alcance Alternado',s:'3x10',g:'Core',o:''},
+        {n:'Panturrilha Unilateral no Degrau',s:'4x20',g:'Panturrilha',o:''}]}],
+    'meso-endo':[
+      {name:'Queima Casa A',tip:'Sem equipamento, sem desculpa. Alta intensidade sempre.',ex:[
+        {n:'Burpee',s:'4x15',g:'Full Body',o:''},
+        {n:'Flexao de Bracos',s:'4x15',g:'Peito',o:''},
+        {n:'Agachamento com Salto',s:'4x15',g:'Pernas',o:''},
+        {n:'Mountain Climber 30s',s:'4x30s',g:'Core',o:''},
+        {n:'Prancha Lateral',s:'3x30s',g:'Core',o:''},
+        {n:'Corrida no Lugar 2min',s:'3x2min',g:'Cardio',o:''}]},
+      {name:'Funcional B - Resistencia',tip:'Volume alto, descanso curto.',ex:[
+        {n:'Remada Invertida na Mesa',s:'4x12',g:'Costas',o:''},
+        {n:'Agachamento Bulgaro',s:'3x12',g:'Pernas',o:''},
+        {n:'Flexao Inclinada',s:'4x12',g:'Peito',o:''},
+        {n:'Hip Thrust no Chao',s:'4x15',g:'Gluteo',o:''},
+        {n:'Abdominal Infra',s:'4x20',g:'Core',o:''},
+        {n:'Jumping Jacks 2min',s:'3x2min',g:'Cardio',o:''}]}],
+    'ecto-endo':[
+      {name:'Equilibrio Casa A',tip:'Regularidade acima de tudo. 3x por semana ja transforma.',ex:[
+        {n:'Flexao de Bracos',s:'3x12',g:'Peito',o:''},
+        {n:'Agachamento',s:'3x15',g:'Pernas',o:''},
+        {n:'Remada Invertida na Mesa',s:'3x12',g:'Costas',o:''},
+        {n:'Pike Push Up',s:'3x10',g:'Ombro',o:''},
+        {n:'Hip Thrust',s:'3x15',g:'Gluteo',o:''},
+        {n:'Caminhada 20min',s:'1x20min',g:'Cardio',o:''}]},
+      {name:'Funcional Casa B',tip:'Compostos que ativam varios grupos ao mesmo tempo.',ex:[
+        {n:'Burpee',s:'3x10',g:'Full Body',o:''},
+        {n:'Afundo Alternado',s:'3x12',g:'Pernas',o:''},
+        {n:'Flexao Diamante',s:'3x10',g:'Triceps',o:''},
+        {n:'Superman',s:'3x15',g:'Lombar',o:''},
+        {n:'Prancha',s:'3x30s',g:'Core',o:''},
+        {n:'Bicicleta Abdominal',s:'3x20',g:'Core',o:''}]}]}};
+
+var DIET={
+  ectomorfo:{d:'Alto volume calorico, muita proteina e carboidrato complexo.',m:['Cafe: Aveia + Banana + 3 Ovos','Almoco: Arroz + Feijao + Frango + Legumes','Lanche: Batata Doce + Atum','Jantar: Macarrao Integral + Carne Vermelha','Pre-sono: Caseina ou Queijo Cottage']},
+  mesomorfo:{d:'Balanceado. Ciclar carboidratos conforme o treino.',m:['Cafe: Ovos + Pao Integral + Frutas','Almoco: Arroz Integral + Frango + Salada','Pre-treino: Banana + Pasta de Amendoim','Pos-treino: Whey + Batata Doce','Jantar: Peixe + Vegetais']},
+  endomorfo:{d:'Baixo carboidrato, alto em proteina. Deficit calorico.',m:['Cafe: Ovos + Queijo + Cafe sem acucar','Almoco: Frango + Salada + Pouco Arroz','Lanche: Atum + Cenoura','Jantar: Peixe ou Carne Magra + Legumes','Evitar: acucar, frituras, bebidas caloricas']},
+  'ecto-meso':{d:'Alto em proteina e carboidrato, moderado em gordura.',m:['Cafe: Aveia + Ovos + Leite','Almoco: Arroz + Feijao + Frango','Lanche: Batata Doce + Whey','Jantar: Macarrao + Carne','Pre-sono: Iogurte + Granola']},
+  'meso-endo':{d:'Proteina alta, carboidrato moderado, deficit leve.',m:['Cafe: Ovos + Aveia Pequena','Almoco: Arroz Integral Pouco + Frango + Salada','Pos-treino: Whey + Fruta','Jantar: Carne Magra + Vegetais','Evitar carboidratos simples a noite']},
+  'ecto-endo':{d:'Consistencia nos horarios. Foco em alimentos integrais.',m:['Cafe: Ovos + Pao Integral','Almoco: Arroz + Feijao + Proteina Magra','Lanche: Fruta + Proteina','Jantar: Peixe ou Frango + Legumes','Manter horarios fixos de refeicao']}};
+
+var ACHS=[
+  {id:'first_workout',l:'Primeiro Treino',d:'Complete seu primeiro treino'},
+  {id:'week_streak',l:'Semana Guerreira',d:'7 dias consecutivos de treino'},
+  {id:'water_hero',l:'Heroi da Hidratacao',d:'Beba 8 copos em um dia'},
+  {id:'diet_tracker',l:'Chef da Dieta',d:'Registre 10 refeicoes'},
+  {id:'lv5',l:'Veterano',d:'Alcance o Level 5'},
+  {id:'lv10',l:'Elite',d:'Alcance o Level 10'},
+  {id:'money_1000',l:'Poupador',d:'Tenha R$1000 de saldo'},
+  {id:'workout_10',l:'Dedicado',d:'Complete 10 treinos'}];
+
+var LVLS=['NOVATO','APRENDIZ','GUERREIRO','VETERANO','ELITE','LENDA','MESTRE','IMORTAL','TRANSCENDENTE','ABSOLUTO'];
+
+function fmt(n){return (n||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function fmtT(s){var h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sc=s%60;return('0'+h).slice(-2)+':'+('0'+m).slice(-2)+':'+('0'+sc).slice(-2);}
+function el(id){return document.getElementById(id);}
+
+// SPLASH
+function enterApp(){
+  var sp=el('splash');
+  sp.style.transition='opacity .6s';sp.style.opacity='0';
+  setTimeout(function(){sp.style.display='none';el('app').classList.add('active');renderAll();},600);
+}
+
+// NAV
+function goPage(id,btn){
+  var pages=document.querySelectorAll('.page');
+  for(var i=0;i<pages.length;i++)pages[i].classList.remove('active');
+  var btns=document.querySelectorAll('.nb');
+  for(var i=0;i<btns.length;i++)btns[i].classList.remove('active');
+  el('p-'+id).classList.add('active');btn.classList.add('active');
+  if(id==='dieta')renderDiet();
+  if(id==='renda')renderFinance();
+  if(id==='nivel')renderLevel();
+  if(id==='treinos')renderWorkouts();
+}
+
+function openModal(id){el(id).classList.add('open');}
+function closeModal(id){el(id).classList.remove('open');}
+document.addEventListener('click',function(e){if(e.target.classList.contains('mbg'))e.target.classList.remove('open');});
+
+function renderAll(){renderHome();renderWorkouts();renderDiet();renderFinance();renderLevel();renderMusicLib();}
+
+// HOME
+function renderHome(){
+  var d=new Date(),h=d.getHours();
+  el('greeting').textContent=h<12?'BOM DIA':h<18?'BOA TARDE':'BOA NOITE';
+  el('today-date').textContent=d.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'}).toUpperCase();
+  var need=S.level*100,pct=Math.min(100,(S.xp/need)*100);
+  el('xp-bar').style.width=pct+'%';
+  el('xp-cur').textContent=S.xp+' XP';
+  el('xp-max').textContent=need+' XP';
+  el('lvl-num').textContent=S.level;
+  el('water-home').textContent=S.waterCount;
+  el('wgoal-d').textContent=S.waterGoal;
+  renderWaterGlasses();
+  el('s-wk').textContent=S.workoutsDone||0;
+  el('s-str').textContent=S.streak||0;
+  el('s-kcal').textContent=S.totalKcal||0;
+  el('today-wk').textContent=S.todayWorkout||'NENHUM SELECIONADO';
+  var b=calcBal();
+  el('bal-h').textContent='R$'+fmt(b.t);
+  el('inc-h').textContent='R$'+fmt(b.mi);
+}
+function calcBal(){
+  var now=new Date(),mo=now.getMonth(),y=now.getFullYear(),t=0,mi=0,me=0;
+  var txs=S.transactions||[];
+  for(var i=0;i<txs.length;i++){
+    var tx=txs[i],td=new Date(tx.date),sgn=tx.type==='income'?1:-1;
+    t+=tx.amount*sgn;
+    if(td.getMonth()===mo&&td.getFullYear()===y){if(tx.type==='income')mi+=tx.amount;else me+=tx.amount;}
+  }
+  return {t:t,mi:mi,me:me,mn:mi-me};
+}
+
+// WATER
+function renderWaterGlasses(){
+  var c=el('water-glasses');if(!c)return;c.innerHTML='';
+  for(var i=0;i<S.waterGoal;i++){
+    var d=document.createElement('div');d.className='wc'+(i<S.waterCount?' f':'');
+    (function(idx){d.onclick=function(){S.waterCount=idx<S.waterCount?idx:idx+1;checkWaterXP();save();renderHome();};})(i);
+    c.appendChild(d);
+  }
+}
+function addWater(){if(S.waterCount<S.waterGoal*2){S.waterCount++;checkWaterXP();save();renderHome();}}
+function removeWater(){if(S.waterCount>0){S.waterCount--;save();renderHome();}}
+function checkWaterXP(){if(S.waterCount>=S.waterGoal){gainXP(20);unlockAch('water_hero');}}
+
+// XP
+function gainXP(n){
+  S.xp+=n;
+  while(S.xp>=S.level*100){S.xp-=S.level*100;S.level++;}
+  if(S.level>=5)unlockAch('lv5');if(S.level>=10)unlockAch('lv10');
+  save();renderHome();renderLevel();
+}
+function unlockAch(id){if(!S.achievements[id]){S.achievements[id]=true;save();}}
+
+// TIMER
+var tmInt=null,tmSec=0,tmOn=false;
+function toggleTimer(){
+  if(tmOn){clearInterval(tmInt);tmOn=false;el('timer-btn').textContent='RETOMAR';}
+  else{tmOn=true;el('timer-btn').textContent='PAUSAR';tmInt=setInterval(function(){tmSec++;el('timer-d').textContent=fmtT(tmSec);},1000);}
+}
+function resetTimer(){clearInterval(tmInt);tmSec=0;tmOn=false;el('timer-d').textContent='00:00:00';el('timer-btn').textContent='INICIAR';}
+
+// WORKOUTS
+var activeTab='academia';
+function switchTab(tab){
+  activeTab=tab;
+  var tabs=['academia','casa','custom'];
+  for(var i=0;i<tabs.length;i++){
+    var pane=el('pane-'+tabs[i]);var btn=el('tab-'+tabs[i]);
+    if(pane)pane.style.display=tabs[i]===tab?'block':'none';
+    if(btn){if(tabs[i]===tab)btn.classList.add('on');else btn.classList.remove('on');}
+  }
+  if(tab!=='custom')renderPlans(tab);else renderCustomList();
+}
+function renderPlans(tab){
+  var bio=S.biotipo,cont=el('plans-'+tab);if(!cont)return;cont.innerHTML='';
+  if(!bio){cont.innerHTML='<div style="color:var(--muted);font-size:.76rem;padding:.5rem 0;line-height:1.6">Selecione seu biotipo acima para ver os planos personalizados.</div>';return;}
+  var plans=WK[tab]&&WK[tab][bio]?WK[tab][bio]:[];
+  if(!plans.length){cont.innerHTML='<div style="color:var(--muted);font-size:.76rem;padding:.5rem 0">Nenhum plano para este biotipo.</div>';return;}
+  for(var pi=0;pi<plans.length;pi++){
+    var plan=plans[pi],pfx=tab+'_'+bio+'_'+pi;
+    var wrap=document.createElement('div');wrap.className='pc';
+    var hdr=document.createElement('div');hdr.style.cssText='display:flex;justify-content:space-between;align-items:center;margin-bottom:.3rem';
+    var nm=document.createElement('span');nm.style.cssText='font-family:\'Bebas Neue\',Impact,sans-serif;font-size:.95rem;color:var(--g2)';nm.textContent=plan.name;
+    var selBtn=document.createElement('button');selBtn.className='btn bs';selBtn.textContent='SELECIONAR';
+    (function(pn){selBtn.onclick=function(){S.todayWorkout=pn;save();renderHome();alert('Treino selecionado!');};})(plan.name);
+    hdr.appendChild(nm);hdr.appendChild(selBtn);wrap.appendChild(hdr);
+    if(plan.tip){var tip=document.createElement('div');tip.className='pt';tip.textContent=plan.tip;wrap.appendChild(tip);}
+    for(var ei=0;ei<plan.ex.length;ei++){
+      var ex=plan.ex[ei],key=pfx+'_'+ei;
+      var done=S.completedExercises&&S.completedExercises.indexOf(key)!==-1;
+      var item=document.createElement('div');item.className='wi'+(done?' done':'');
+      item.innerHTML='<div class="win">'+(ei+1)+'</div><div class="wii"><div class="wn">'+ex.n+'</div><div class="wd"><span class="tag">'+ex.g+'</span>'+ex.s+'</div>'+(ex.o?'<div class="wo">'+ex.o+'</div>':'')+'</div><div class="wck'+(done?' ok':'')+'"></div>';
+      (function(p2,e2,pl2,t2){item.onclick=function(){toggleEx(p2,e2,pl2,t2);};})(pfx,ei,plan,tab);
+      wrap.appendChild(item);
+    }
+    cont.appendChild(wrap);
+  }
+}
+function renderCustomList(){
+  var cl=el('custom-list');if(!cl)return;cl.innerHTML='';
+  var cex=S.customExercises||[];
+  if(!cex.length){cl.innerHTML='<div style="color:var(--muted);font-size:.76rem;padding:.5rem 0">Nenhum exercicio adicionado. Clique abaixo para comecar.</div>';return;}
+  for(var i=0;i<cex.length;i++){
+    var ex=cex[i],done=S.completedExercises&&S.completedExercises.indexOf('c_'+i)!==-1;
+    var item=document.createElement('div');item.className='wi'+(done?' done':'');
+    item.innerHTML='<div class="win">C'+(i+1)+'</div><div class="wii"><div class="wn">'+ex.name+'</div><div class="wd"><span class="tag">'+ex.group+'</span>'+ex.sets+'</div></div><div style="display:flex;gap:.32rem;align-items:center;flex-shrink:0"><div class="wck'+(done?' ok':'')+'"></div><button class="btn bs bd" onclick="rmCustom('+i+',event)">X</button></div>';
+    (function(idx){item.onclick=function(e){if(e.target.tagName!=='BUTTON')toggleCustomEx(idx);};})(i);
+    cl.appendChild(item);
+  }
+}
+function renderWorkouts(){
+  el('bio-disp').textContent=S.biotipo?S.biotipo.toUpperCase():'NAO DEFINIDO';
+  renderPlans('academia');
+  renderCustomList();
+}
+function toggleEx(pfx,ei,plan,tab){
+  if(!S.completedExercises)S.completedExercises=[];
+  var key=pfx+'_'+ei,idx=S.completedExercises.indexOf(key);
+  if(idx===-1){
+    S.completedExercises.push(key);
+    var allDone=true;
+    for(var i=0;i<plan.ex.length;i++){if(S.completedExercises.indexOf(pfx+'_'+i)===-1){allDone=false;break;}}
+    if(allDone)finishWorkout();
+  }else{S.completedExercises.splice(idx,1);}
+  save();renderPlans(tab);
+}
+function toggleCustomEx(i){
+  if(!S.completedExercises)S.completedExercises=[];
+  var key='c_'+i,idx=S.completedExercises.indexOf(key);
+  if(idx===-1)S.completedExercises.push(key);else S.completedExercises.splice(idx,1);
+  save();renderCustomList();
+}
+function finishWorkout(){
+  S.workoutsDone=(S.workoutsDone||0)+1;
+  var t=new Date().toDateString();
+  if(S.lastWorkoutDate!==t){
+    var y=new Date();y.setDate(y.getDate()-1);
+    S.streak=S.lastWorkoutDate===y.toDateString()?(S.streak||0)+1:1;
+    S.lastWorkoutDate=t;
+  }
+  unlockAch('first_workout');
+  if(S.streak>=7)unlockAch('week_streak');
+  if(S.workoutsDone>=10)unlockAch('workout_10');
+  gainXP(50);save();renderHome();
+  alert('Treino completo! +50 XP!');
+}
+function addExercise(){
+  var n=el('ex-nm').value.trim(),s=el('ex-sets').value.trim(),g=el('ex-grp').value.trim();
+  if(!n||!s){alert('Preencha nome e series!');return;}
+  if(!S.customExercises)S.customExercises=[];
+  S.customExercises.push({name:n,sets:s,group:g||'Geral'});
+  save();closeModal('m-addex');el('ex-nm').value='';el('ex-sets').value='';el('ex-grp').value='';
+  renderCustomList();
+}
+function rmCustom(i,e){
+  e.stopPropagation();
+  S.customExercises.splice(i,1);
+  var nc=[];
+  if(S.completedExercises){for(var j=0;j<S.completedExercises.length;j++){if(S.completedExercises[j].indexOf('c_')!==0)nc.push(S.completedExercises[j]);}}
+  S.completedExercises=nc;save();renderCustomList();
+}
+function saveBiotipo(){
+  S.biotipo=el('bio-sel').value;save();closeModal('m-bio');renderWorkouts();renderDiet();
+}
+
+// MUSIC
+var tracks=[],curTrack=-1,aud=el('audio');
+function loadMP3(e){
+  var files=e.target.files;
+  for(var i=0;i<files.length;i++){
+    var f=files[i],found=false;
+    for(var j=0;j<tracks.length;j++){if(tracks[j].name===f.name){found=true;break;}}
+    if(!found)tracks.push({name:f.name.replace(/\.mp3$/i,''),url:URL.createObjectURL(f)});
+  }
+  renderMusicLib();if(tracks.length&&curTrack===-1)playTrack(0);
+}
+function renderMusicLib(){
+  var list=el('track-list'),none=el('no-tracks');list.innerHTML='';none.style.display=tracks.length?'none':'block';
+  for(var i=0;i<tracks.length;i++){
+    var t=tracks[i],item=document.createElement('div');item.className='wi'+(i===curTrack?' done':'');
+    item.innerHTML='<div class="win">'+(i+1)+'</div><div class="wii"><div class="wn">'+t.name+'</div></div><button class="btn bs" onclick="playTrack('+i+',event)">TOCAR</button>';
+    (function(idx){item.onclick=function(){playTrack(idx);};})(i);
+    list.appendChild(item);
+  }
+}
+function playTrack(i,e){
+  if(e)e.stopPropagation();
+  curTrack=i;aud.src=tracks[i].url;aud.play();
+  el('music-bar').classList.add('vis');el('music-nm').textContent=tracks[i].name;
+  updatePI(true);renderMusicLib();
+}
+function togglePlay(){if(aud.paused){aud.play();updatePI(true);}else{aud.pause();updatePI(false);}}
+function updatePI(p){el('play-icon').innerHTML=p?'<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>':'<polygon points="5 3 19 12 5 21 5 3"/>';}
+function nextTrack(){if(tracks.length)playTrack((curTrack+1)%tracks.length);}
+function prevTrack(){if(tracks.length)playTrack((curTrack-1+tracks.length)%tracks.length);}
+function seekTrack(e){if(!aud.duration)return;var r=e.currentTarget.getBoundingClientRect();aud.currentTime=((e.clientX-r.left)/r.width)*aud.duration;}
+aud.addEventListener('timeupdate',function(){
+  if(aud.duration){
+    el('mpf').style.width=((aud.currentTime/aud.duration)*100)+'%';
+    var m=Math.floor(aud.currentTime/60),s=Math.floor(aud.currentTime%60);
+    el('mtime').textContent=m+':'+(s<10?'0':'')+s;
+  }
+});
+aud.addEventListener('ended',nextTrack);
+
+// DIET
+function renderDiet(){
+  var kcal=0,prot=0,carb=0,fat=0,meals=S.meals||[];
+  for(var i=0;i<meals.length;i++){kcal+=meals[i].kcal||0;prot+=meals[i].prot||0;carb+=meals[i].carb||0;fat+=meals[i].fat||0;}
+  S.totalKcal=kcal;
+  var g=S.dietGoal||{kcal:2000,prot:150,carb:250,fat:65};
+  el('m-kcal').textContent=Math.round(kcal);el('m-prot').textContent=Math.round(prot)+'g';el('m-carb').textContent=Math.round(carb)+'g';el('m-fat').textContent=Math.round(fat)+'g';
+  el('mp-kcal').style.width=Math.min(100,(kcal/g.kcal)*100)+'%';el('mp-prot').style.width=Math.min(100,(prot/g.prot)*100)+'%';el('mp-carb').style.width=Math.min(100,(carb/g.carb)*100)+'%';el('mp-fat').style.width=Math.min(100,(fat/g.fat)*100)+'%';
+  var ml=el('meal-list');ml.innerHTML='';
+  if(!meals.length){ml.innerHTML='<div style="color:var(--muted);font-size:.76rem;padding:.5rem 0">Nenhuma refeicao registrada hoje.</div>';}
+  for(var i=0;i<meals.length;i++){
+    var m=meals[i],d=document.createElement('div');d.className='card csm';
+    d.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center"><span style="font-weight:700">'+m.name+'</span><button class="btn bs bd" onclick="removeMeal('+i+')">X</button></div><div style="font-size:.7rem;color:var(--muted);margin-top:.22rem">'+m.kcal+' kcal &nbsp; P:'+m.prot+'g &nbsp; C:'+m.carb+'g &nbsp; G:'+m.fat+'g</div>';
+    ml.appendChild(d);
+  }
+  var dp=el('diet-plans');dp.innerHTML='';var bio=S.biotipo;
+  var bios=Object.keys(DIET);
+  for(var i=0;i<bios.length;i++){
+    var b=bios[i],plan=DIET[b],active=b===bio;
+    var wrap=document.createElement('div');wrap.className='pc';wrap.style.borderColor=active?'var(--g1)':'var(--border)';
+    var inner='<div style="font-family:\'Bebas Neue\',Impact,sans-serif;color:'+(active?'var(--g1)':'var(--muted)')+';font-size:.92rem;letter-spacing:.1em;margin-bottom:.28rem">'+b.toUpperCase()+(active?' (SEU BIOTIPO)':'')+'</div><div style="font-size:.7rem;color:var(--muted);margin-bottom:.42rem">'+plan.d+'</div>';
+    for(var j=0;j<plan.m.length;j++)inner+='<div style="font-size:.72rem;padding:.18rem 0;border-bottom:1px solid var(--border)">'+plan.m[j]+'</div>';
+    wrap.innerHTML=inner;dp.appendChild(wrap);
+  }
+}
+function addMeal(){
+  var n=el('meal-nm').value.trim();if(!n){alert('Insira o nome!');return;}
+  if(!S.meals)S.meals=[];
+  S.meals.push({name:n,kcal:+(el('meal-kcal').value)||0,prot:+(el('meal-prot').value)||0,carb:+(el('meal-carb').value)||0,fat:+(el('meal-fat').value)||0});
+  gainXP(10);if((S.meals||[]).length>=10)unlockAch('diet_tracker');
+  save();closeModal('m-addmeal');
+  ['meal-nm','meal-kcal','meal-prot','meal-carb','meal-fat'].forEach(function(id){el(id).value='';});
+  renderDiet();
+}
+function removeMeal(i){S.meals.splice(i,1);save();renderDiet();}
+function saveDietGoal(){
+  S.dietGoal={kcal:+(el('g-kcal').value)||2000,prot:+(el('g-prot').value)||150,carb:+(el('g-carb').value)||250,fat:+(el('g-fat').value)||65};
+  save();closeModal('m-dgoal');renderDiet();
+}
+
+// FINANCE
+function renderFinance(){
+  var b=calcBal();
+  el('bal-pg').textContent='R$'+fmt(b.t);el('inc-pg').textContent='R$'+fmt(b.mi);el('exp-pg').textContent='R$'+fmt(b.me);el('balm-pg').textContent='R$'+fmt(b.mn);
+  var goal=S.finGoal||5000,pct=Math.min(100,(b.t/goal)*100);
+  el('fgoal-d').textContent=fmt(goal);el('fprog').style.width=pct+'%';el('fpct').textContent=Math.round(pct);
+  if(b.t>=1000)unlockAch('money_1000');
+  var tl=el('tx-list');tl.innerHTML='';var txs=S.transactions||[];
+  if(!txs.length){tl.innerHTML='<div style="color:var(--muted);font-size:.76rem;padding:1rem 0;text-align:center">Nenhum lancamento registrado.</div>';renderHome();return;}
+  for(var i=txs.length-1;i>=0;i--){
+    var t=txs[i],d=document.createElement('div');d.className='txi';
+    d.innerHTML='<div><div>'+t.desc+'</div><div style="font-size:.62rem;color:var(--muted)">'+new Date(t.date).toLocaleDateString('pt-BR')+'</div></div><div style="display:flex;align-items:center;gap:.42rem"><span class="txamt '+(t.type==='income'?'ti':'te')+'">'+(t.type==='income'?'+':'-')+'R$'+fmt(t.amount)+'</span><button class="btn bs bd" onclick="rmTx('+i+')">X</button></div>';
+    tl.appendChild(d);
+  }
+  renderHome();
+}
+function addTx(){
+  var type=el('tx-type').value,desc=el('tx-desc').value.trim(),val=parseFloat(el('tx-val').value)||0;
+  if(!desc||!val){alert('Preencha todos os campos!');return;}
+  if(!S.transactions)S.transactions=[];
+  S.transactions.push({type:type,desc:desc,amount:val,date:new Date().toISOString()});
+  gainXP(5);save();closeModal('m-addtx');el('tx-desc').value='';el('tx-val').value='';renderFinance();
+}
+function rmTx(i){S.transactions.splice(i,1);save();renderFinance();}
+function saveFinGoal(){S.finGoal=parseFloat(el('fgoal-i').value)||5000;save();closeModal('m-fgoal');renderFinance();}
+
+// LEVEL
+function renderLevel(){
+  var t=LVLS[Math.min(S.level-1,LVLS.length-1)],need=S.level*100,pct=Math.min(100,(S.xp/need)*100);
+  el('lvl-big').textContent=S.level;el('lvl-title').textContent=t;el('lvl-xp').textContent=S.xp+' / '+need+' XP';el('xp-bar2').style.width=pct+'%';
+  var al=el('ach-list');al.innerHTML='';
+  for(var i=0;i<ACHS.length;i++){
+    var a=ACHS[i],u=!!S.achievements[a.id];
+    var d=document.createElement('div');d.className='achi'+(u?'':' achlk');
+    d.innerHTML='<div class="achic" style="'+(u?'border-color:var(--g1)':'')+'"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="'+(u?'var(--g1)':'var(--muted)')+'" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div><div><div style="font-weight:700;font-size:.82rem">'+a.l+'</div><div style="font-size:.7rem;color:var(--muted)">'+a.d+'</div></div>'+(u?'<span style="margin-left:auto;font-size:.6rem;color:var(--g1);letter-spacing:.1em;flex-shrink:0">COMPLETO</span>':'');
+    al.appendChild(d);
+  }
+}
+
+// INIT
+window.onload=function(){
+  if(S.biotipo)el('bio-sel').value=S.biotipo;
+  if(S.dietGoal){el('g-kcal').value=S.dietGoal.kcal;el('g-prot').value=S.dietGoal.prot;el('g-carb').value=S.dietGoal.carb;el('g-fat').value=S.dietGoal.fat;}
+};
+
+// SERVICE WORKER
+if('serviceWorker' in navigator){
+  try{
+    var sw="self.addEventListener('install',function(){self.skipWaiting();});self.addEventListener('activate',function(){clients.claim();});self.addEventListener('fetch',function(e){e.respondWith(fetch(e.request).catch(function(){return caches.match(e.request);}));});";
+    var blob=new Blob([sw],{type:'application/javascript'});
+    navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(function(){});
+  }catch(e){}
+}
+try{if('wakeLock' in navigator)navigator.wakeLock.request('screen').catch(function(){});}catch(e){}
+
+</script>
+</body>
+</html>
