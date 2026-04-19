@@ -664,22 +664,30 @@ select option{background:var(--bg2)}
       </div>
     </div>
 
-    <!-- MUSICA -->
-    <div class="page" id="p-musica">
-      <div class="card" style="text-align:center;padding:24px;margin-bottom:16px">
-        <div style="font-size:2rem;margin-bottom:8px">&#9835;</div>
-        <div style="font-size:.9rem;font-weight:600;margin-bottom:6px">Player de Musica</div>
-        <div style="font-size:.75rem;color:var(--text3);margin-bottom:16px;line-height:1.6">Selecione arquivos MP3. Ficam salvos permanentemente no app — mesmo fechando e reabrindo.</div>
-        <div style="position:relative;overflow:hidden">
-          <button class="btn btn-solid btn-full" style="pointer-events:none">Carregar MP3</button>
-          <input type="file" id="mp3in" accept=".mp3,.m4a,.ogg,.wav,.flac,.aac,audio/*" multiple
-            style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;font-size:0"
-            onchange="loadMP3(event)">
+    <!-- MISSOES SEMANAIS -->
+    <div class="page" id="p-missoes">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+        <div>
+          <div style="font-size:1.1rem;font-weight:700">Missoes Semanais</div>
+          <div style="font-size:.72rem;color:var(--text3);margin-top:2px">Resetam toda segunda-feira</div>
         </div>
+        <div class="badge" id="missions-xp-badge">0 XP ganhos</div>
       </div>
-      <div class="sec-title">Biblioteca</div>
-      <div id="track-list"></div>
-      <div id="no-tracks" style="text-align:center;color:var(--text3);font-size:.8rem;padding:30px 0">Nenhum arquivo carregado ainda</div>
+
+      <div class="sec-title">Esta semana</div>
+      <div id="missions-list"></div>
+
+      <div class="card card-sm" style="margin-top:4px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+          <div class="card-label" style="margin:0">XP DESTA SEMANA</div>
+          <div style="font-size:.78rem;font-weight:700;color:var(--accent)" id="week-xp-total">0 XP</div>
+        </div>
+        <div class="prog-track"><div class="prog-fill" id="week-xp-bar" style="width:0%"></div></div>
+        <div style="font-size:.65rem;color:var(--text3);margin-top:4px">Meta semanal: 5000 XP para conquista Modo Besta</div>
+      </div>
+
+      <div class="sec-title" style="margin-top:20px">Semanas anteriores</div>
+      <div id="missions-history"></div>
     </div>
 
     <!-- DIETA -->
@@ -788,9 +796,9 @@ select option{background:var(--bg2)}
       <svg class="nb-icon" viewBox="0 0 24 24"><path d="M6.5 6.5h11M6.5 17.5h11M4 12h16M7 9.5V6.5M17 9.5V6.5M7 17.5v-3M17 17.5v-3"/></svg>
       <span class="nb-label">TREINOS</span>
     </button>
-    <button class="nb" onclick="goPage('musica',this)">
-      <svg class="nb-icon" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
-      <span class="nb-label">MUSICA</span>
+    <button class="nb" onclick="goPage('missoes',this)">
+      <svg class="nb-icon" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+      <span class="nb-label">MISSÕES</span>
     </button>
     <button class="nb" onclick="goPage('dieta',this)">
       <svg class="nb-icon" viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
@@ -931,7 +939,6 @@ select option{background:var(--bg2)}
   </div>
 </div>
 
-<audio id="audio"></audio>
 
 <script>
 
@@ -951,8 +958,10 @@ var DEF={
   splashSeen:false,
   lastMealDate:'',lastExDate:'',
   totalMealsEver:0,totalKcalEver:0,
-  waterGoalDays:0,lastWaterGoalDate:'',
-  biosUsed:{}
+  waterGoalDays:0,waterStreak:0,lastWaterGoalDate:'',
+  biosUsed:{},missionWeeks:{},totalMissionsCompleted:0,
+  lastMissionTrainDay:'',lastMissionWaterDay:'',lastMissionDietDay:'',lastMissionPerfectDay:'',
+  lastPerfectDay:'',lastDietDay:''
 };
 
 // Multi-storage: try localStorage, then sessionStorage, then cookie, then memory
@@ -1265,57 +1274,64 @@ var DIET={
   'ecto-endo':{d:'Consistencia nos horarios. Foco em alimentos integrais.',m:['Cafe: Ovos + Pao Integral','Almoco: Arroz + Feijao + Proteina Magra','Lanche: Fruta + Proteina','Jantar: Peixe ou Frango + Legumes','Manter horarios fixos de refeicao']}};
 
 var ACHS=[
-  /* TREINO */
-  {id:'first_workout',  cat:'treino', l:'Primeiro Passo',          d:'Complete seu primeiro treino'},
-  {id:'wk_10',          cat:'treino', l:'Dedicado',                 d:'Complete 10 treinos'},
-  {id:'wk_50',          cat:'treino', l:'Implacavel',               d:'Complete 50 treinos'},
-  {id:'wk_100',         cat:'treino', l:'Centuriao',                d:'Complete 100 treinos'},
-  {id:'wk_365',         cat:'treino', l:'Um Ano de Guerra',         d:'Complete 365 treinos'},
-  {id:'week_streak',    cat:'treino', l:'Semana Guerreira',         d:'7 dias consecutivos de treino'},
-  {id:'streak_30',      cat:'treino', l:'Mes Sem Parar',            d:'30 dias consecutivos de treino'},
-  {id:'streak_100',     cat:'treino', l:'Centuriao da Rotina',      d:'100 dias consecutivos de treino'},
-  {id:'streak_365',     cat:'treino', l:'Lenda Viva',               d:'365 dias consecutivos de treino'},
-  {id:'all_bios',       cat:'treino', l:'Estudioso do Corpo',       d:'Selecione todos os 6 biotipos pelo menos 1 vez'},
-  /* HIDRATACAO */
-  {id:'water_hero',     cat:'agua',   l:'Heroi da Hidratacao',      d:'Beba 8 copos em um dia'},
-  {id:'water_week',     cat:'agua',   l:'Fonte Viva',               d:'Bata a meta de agua por 7 dias seguidos'},
-  {id:'water_100',      cat:'agua',   l:'Rio Eterno',               d:'Beba 100 dias atingindo a meta de agua'},
-  /* DIETA */
-  {id:'diet_10',        cat:'dieta',  l:'Chef da Dieta',            d:'Registre 10 refeicoes'},
-  {id:'diet_100',       cat:'dieta',  l:'Mestre Nutricional',       d:'Registre 100 refeicoes'},
-  {id:'diet_500',       cat:'dieta',  l:'Nutricao Absoluta',        d:'Registre 500 refeicoes'},
-  {id:'kcal_10k',       cat:'dieta',  l:'Motor Humano',             d:'Acumule 10.000 kcal registradas'},
-  /* FINANCEIRO */
-  {id:'money_1k',       cat:'renda',  l:'Poupador',                 d:'Tenha R$1.000 de saldo'},
-  {id:'money_10k',      cat:'renda',  l:'Investidor',               d:'Tenha R$10.000 de saldo'},
-  {id:'money_100k',     cat:'renda',  l:'Milionario em Formacao',   d:'Tenha R$100.000 de saldo'},
-  {id:'tx_50',          cat:'renda',  l:'Controlado',               d:'Registre 50 lancamentos financeiros'},
-  {id:'tx_200',         cat:'renda',  l:'CFO Pessoal',              d:'Registre 200 lancamentos financeiros'},
-  /* NIVEL */
-  {id:'lv5',            cat:'nivel',  l:'Veterano',                 d:'Alcance o Level 5'},
-  {id:'lv10',           cat:'nivel',  l:'Elite',                    d:'Alcance o Level 10'},
-  {id:'lv25',           cat:'nivel',  l:'Mestre',                   d:'Alcance o Level 25'},
-  {id:'lv50',           cat:'nivel',  l:'Imortal',                  d:'Alcance o Level 50'},
-  {id:'lv100',          cat:'nivel',  l:'Transcendente',            d:'Alcance o Level 100'},
-  {id:'lv250',          cat:'nivel',  l:'Alem do Humano',           d:'Alcance o Level 250'},
-  {id:'lv500',          cat:'nivel',  l:'Entidade',                 d:'Alcance o Level 500'},
-  {id:'lv1000',         cat:'nivel',  l:'Singularidade',            d:'Alcance o Level 1000'},
-  {id:'lv2500',         cat:'nivel',  l:'Consciencia Pura',         d:'Alcance o Level 2500'},
-  {id:'lv5000',         cat:'nivel',  l:'Arquiteto da Realidade',   d:'Alcance o Level 5000'},
-  {id:'lv7000',         cat:'nivel',  l:'RECEPTACULO DO DEUS IMORTAL', d:'Alcance o nivel maximo — Level 7000. Voce transcendeu tudo.'},
-  /* MUSICA */
-  {id:'music_1',        cat:'musica', l:'DJ do Treino',             d:'Adicione sua primeira musica'},
-  {id:'music_10',       cat:'musica', l:'Playlist Guerreira',       d:'Adicione 10 musicas'},
-  {id:'music_50',       cat:'musica', l:'Festival Pessoal',         d:'Adicione 50 musicas'}
+  {id:'wk1',    cat:'treino',l:'Primeiro Passo',         d:'Complete seu primeiro treino'},
+  {id:'wk10',   cat:'treino',l:'Dedicado',               d:'Complete 10 treinos'},
+  {id:'wk50',   cat:'treino',l:'Implacavel',             d:'Complete 50 treinos'},
+  {id:'wk100',  cat:'treino',l:'Centuriao',              d:'Complete 100 treinos'},
+  {id:'wk365',  cat:'treino',l:'Um Ano de Guerra',       d:'Complete 365 treinos'},
+  {id:'wk1000', cat:'treino',l:'Eternidade de Ferro',    d:'Complete 1000 treinos'},
+  {id:'str7',   cat:'treino',l:'Semana Guerreira',       d:'7 dias consecutivos de treino'},
+  {id:'str30',  cat:'treino',l:'Mes Sem Parar',          d:'30 dias consecutivos de treino'},
+  {id:'str100', cat:'treino',l:'Centuriao da Rotina',    d:'100 dias consecutivos de treino'},
+  {id:'str365', cat:'treino',l:'Lenda Viva',             d:'365 dias consecutivos'},
+  {id:'allbios',cat:'treino',l:'Estudioso do Corpo',     d:'Selecione todos os 6 biotipos'},
+  {id:'wat1',   cat:'agua',  l:'Heroi da Hidratacao',    d:'Beba 8 copos em um dia'},
+  {id:'wat7',   cat:'agua',  l:'Fonte Viva',             d:'Bata meta de agua 7 dias seguidos'},
+  {id:'wat30',  cat:'agua',  l:'Torrente',               d:'Bata meta de agua 30 dias seguidos'},
+  {id:'wat100', cat:'agua',  l:'Rio Eterno',             d:'100 dias atingindo a meta'},
+  {id:'wat365', cat:'agua',  l:'Oceano Interno',         d:'365 dias atingindo a meta'},
+  {id:'diet10', cat:'dieta', l:'Chef da Dieta',          d:'Registre 10 refeicoes'},
+  {id:'diet100',cat:'dieta', l:'Mestre Nutricional',     d:'Registre 100 refeicoes'},
+  {id:'diet500',cat:'dieta', l:'Nutricao Absoluta',      d:'Registre 500 refeicoes'},
+  {id:'diet1000',cat:'dieta',l:'Alquimista do Corpo',    d:'Registre 1000 refeicoes'},
+  {id:'kcal10k',cat:'dieta', l:'Motor Humano',           d:'Acumule 10.000 kcal registradas'},
+  {id:'kcal100k',cat:'dieta',l:'Fornalha Perpetua',      d:'Acumule 100.000 kcal registradas'},
+  {id:'mis10',  cat:'missao',l:'Agente da Missao',       d:'Complete 10 missoes semanais'},
+  {id:'mis50',  cat:'missao',l:'Veterano das Missoes',   d:'Complete 50 missoes semanais'},
+  {id:'mis100', cat:'missao',l:'Inquebravel',            d:'Complete 100 missoes semanais'},
+  {id:'mis_beast',cat:'missao',l:'Modo Besta',           d:'Ganhe 5000 XP em uma semana'},
+  {id:'mis_perf', cat:'missao',l:'Perfeiccao',           d:'5 dias perfeitos em uma semana'},
+  {id:'fin1k',  cat:'renda', l:'Poupador',               d:'Tenha R$1.000 de saldo'},
+  {id:'fin10k', cat:'renda', l:'Investidor',             d:'Tenha R$10.000 de saldo'},
+  {id:'fin100k',cat:'renda', l:'Milionario em Formacao', d:'Tenha R$100.000 de saldo'},
+  {id:'tx50',   cat:'renda', l:'Controlado',             d:'Registre 50 lancamentos'},
+  {id:'tx200',  cat:'renda', l:'CFO Pessoal',            d:'Registre 200 lancamentos'},
+  {id:'lv5',    cat:'nivel', l:'Veterano',               d:'Alcance o Level 5'},
+  {id:'lv10',   cat:'nivel', l:'Elite',                  d:'Alcance o Level 10'},
+  {id:'lv25',   cat:'nivel', l:'Mestre',                 d:'Alcance o Level 25'},
+  {id:'lv50',   cat:'nivel', l:'Imortal',                d:'Alcance o Level 50'},
+  {id:'lv100',  cat:'nivel', l:'Transcendente',          d:'Alcance o Level 100'},
+  {id:'lv250',  cat:'nivel', l:'Alem do Humano',         d:'Alcance o Level 250'},
+  {id:'lv500',  cat:'nivel', l:'Entidade',               d:'Alcance o Level 500'},
+  {id:'lv1000', cat:'nivel', l:'Singularidade',          d:'Alcance o Level 1000'},
+  {id:'lv2500', cat:'nivel', l:'Consciencia Pura',       d:'Alcance o Level 2500'},
+  {id:'lv5000', cat:'nivel', l:'Arquiteto da Realidade', d:'Alcance o Level 5000'},
+  {id:'lv7000', cat:'nivel', l:'RECEPTACULO DO DEUS IMORTAL',d:'Level maximo — Level 7000. Voce transcendeu tudo.'}
 ];
 var LVLS_NAMED=[
-  [1,'Novato'],[5,'Aprendiz'],[10,'Guerreiro'],[25,'Veterano'],[50,'Elite'],
-  [100,'Lenda'],[200,'Mestre'],[350,'Imortal'],[500,'Transcendente'],
-  [750,'Alem do Humano'],[1000,'Entidade'],[1500,'Singularidade'],
-  [2000,'Consciencia Pura'],[2500,'Arquiteto da Realidade'],[3000,'Deus Adormecido'],
-  [3500,'Deus Desperto'],[4000,'Deus da Forca'],[4500,'Deus da Mente'],
-  [5000,'Deus do Tempo'],[5500,'Deus do Cosmos'],[6000,'Deus Absoluto'],
-  [6500,'Origem de Tudo'],[7000,'RECEPTACULO DO DEUS IMORTAL']
+  [1,'Novato'],[5,'Aprendiz'],[10,'Guerreiro'],[20,'Combatente'],
+  [35,'Soldado'],[50,'Veterano'],[75,'Especialista'],[100,'Elite'],
+  [150,'Campeão'],[200,'Mestre'],[300,'Grão-Mestre'],[400,'Lenda'],
+  [500,'Imortal'],[600,'Transcendente'],[750,'Além do Humano'],
+  [900,'Entidade'],[1000,'Singularidade'],[1250,'Consciência Pura'],
+  [1500,'Arquiteto da Realidade'],[1750,'Deus Adormecido'],
+  [2000,'Deus Desperto'],[2250,'Deus da Força'],[2500,'Deus da Mente'],
+  [2750,'Deus do Tempo'],[3000,'Deus do Cosmos'],[3250,'Deus Absoluto'],
+  [3500,'Origem de Tudo'],[3750,'Além da Existência'],[4000,'Vazio Consciente'],
+  [4250,'Luz Primordial'],[4500,'Eco do Universo'],[4750,'Âncora do Real'],
+  [5000,'Além da Morte'],[5250,'Estrutura do Tudo'],[5500,'Núcleo Eterno'],
+  [5750,'Força Primordial'],[6000,'Essência do Caos'],[6250,'Pai dos Deuses'],
+  [6500,'Origem do Tempo'],[6750,'Senhor do Absoluto'],[7000,'RECEPTÁCULO DO DEUS IMORTAL']
 ];
 var MAX_LEVEL=7000;
 function getLevelTitle(lvl){
@@ -1405,6 +1421,7 @@ function goPage(id,btn){
   if(id==='nivel')renderLevel();
   if(id==='treinos')renderWorkouts();
   if(id==='home')renderHome();
+  if(id==='missoes')renderMissions();
 }
 
 // ─────────────────────────────────────────────
@@ -1421,8 +1438,7 @@ function closeSettings(){el('settings-panel').classList.remove('open');}
 // RENDER ALL
 // ─────────────────────────────────────────────
 function renderAll(){
-  renderHome();renderWorkouts();renderDiet();renderFinance();renderLevel();renderMusicLib();
-  idbInitTracks();
+  renderHome();renderWorkouts();renderDiet();renderFinance();renderLevel();renderMissions();
   initBioSelector();
   // Restore settings inputs
   if(S.finGoal)el('fgoal-settings').value=S.finGoal;
@@ -1493,14 +1509,22 @@ function addWater(){
 function removeWater(){if(S.waterCount>0){S.waterCount--;save();renderHome();}}
 function checkWaterXP(){
   if(S.waterCount>=S.waterGoal){
-    if(!S.achievements['water_hero'])gainXP(20);
-    unlockAch('water_hero');
-    if(!S.waterGoalDays)S.waterGoalDays=0;
-    // Only count once per day
+    if(!S.achievements['wat1'])gainXP(100);
+    unlockAch('wat1');
     var td=new Date().toDateString();
-    if(S.lastWaterGoalDate!==td){S.lastWaterGoalDate=td;S.waterGoalDays++;}
-    if(S.waterGoalDays>=7)unlockAch('water_week');
-    if(S.waterGoalDays>=100)unlockAch('water_100');
+    if(S.lastWaterGoalDate!==td){
+      S.lastWaterGoalDate=td;
+      if(!S.waterGoalDays)S.waterGoalDays=0;S.waterGoalDays++;
+      if(!S.waterStreak)S.waterStreak=0;S.waterStreak++;
+      if(S.waterStreak>=7)unlockAch('wat7');
+      if(S.waterStreak>=30)unlockAch('wat30');
+      if(S.waterGoalDays>=100)unlockAch('wat100');
+      if(S.waterGoalDays>=365)unlockAch('wat365');
+      updateMissionWaterDay();
+    }
+    var extra=Math.max(0,S.waterCount-S.waterGoal);
+    if(extra>0)gainXP(Math.min(extra,5)*10);
+    checkMissionProgress();save();
   }
 }
 function updateWaterGoal(v){S.waterGoal=parseInt(v)||8;save();renderHome();}
@@ -1508,29 +1532,35 @@ function updateWaterGoal(v){S.waterGoal=parseInt(v)||8;save();renderHome();}
 // ─────────────────────────────────────────────
 // XP / LEVEL
 // ─────────────────────────────────────────────
+// ─────────────────────────────────────────────
+// XP FORMULA — Level 1→7000 em ~730 dias com 1350 XP/dia (78% eficiência)
+// XP(lv) = floor(60 + 78 * (lv/7000)^0.55)
+// Lv1: 60 XP | Lv500: 78 XP | Lv1000: 86 XP | Lv3500: 113 XP | Lv7000: 137 XP
+// ─────────────────────────────────────────────
+function xpParaProximoLevel(level){
+  if(level>=MAX_LEVEL)return Infinity;
+  return Math.floor(60+78*Math.pow(level/7000,0.55));
+}
+
 function gainXP(n){
-  if(S.level>=MAX_LEVEL){
-    // Already at max - just accumulate XP for display
-    S.xp+=n;save();renderHome();renderLevel();return;
-  }
+  if(!n||n<=0)return;
+  trackWeeklyXP(n);
+  if(S.level>=MAX_LEVEL){S.xp+=n;save();renderHome();renderLevel();return;}
   S.xp+=n;
-  while(S.level<MAX_LEVEL&&S.xp>=S.level*100){S.xp-=S.level*100;S.level++;}
+  while(S.level<MAX_LEVEL&&S.xp>=xpParaProximoLevel(S.level)){
+    S.xp-=xpParaProximoLevel(S.level);S.level++;
+  }
   if(S.level>=MAX_LEVEL){S.level=MAX_LEVEL;S.xp=0;}
-  // Level milestone achievements
   var lv=S.level;
-  if(lv>=5)unlockAch('lv5');
-  if(lv>=10)unlockAch('lv10');
-  if(lv>=25)unlockAch('lv25');
-  if(lv>=50)unlockAch('lv50');
-  if(lv>=100)unlockAch('lv100');
-  if(lv>=250)unlockAch('lv250');
-  if(lv>=500)unlockAch('lv500');
-  if(lv>=1000)unlockAch('lv1000');
-  if(lv>=2500)unlockAch('lv2500');
-  if(lv>=5000)unlockAch('lv5000');
+  if(lv>=5)unlockAch('lv5');     if(lv>=10)unlockAch('lv10');
+  if(lv>=25)unlockAch('lv25');   if(lv>=50)unlockAch('lv50');
+  if(lv>=100)unlockAch('lv100'); if(lv>=250)unlockAch('lv250');
+  if(lv>=500)unlockAch('lv500'); if(lv>=1000)unlockAch('lv1000');
+  if(lv>=2500)unlockAch('lv2500');if(lv>=5000)unlockAch('lv5000');
   if(lv>=7000)unlockAch('lv7000');
   save();renderHome();renderLevel();
 }
+
 function unlockAch(id){if(!S.achievements[id]){S.achievements[id]=true;save();}}
 
 // ─────────────────────────────────────────────
@@ -1558,7 +1588,7 @@ function selectBio(el2){
   S.biotipo=bio;
   if(!S.biosUsed)S.biosUsed={};
   S.biosUsed[bio]=true;
-  if(Object.keys(S.biosUsed).length>=6)unlockAch('all_bios');
+  if(Object.keys(S.biosUsed).length>=6)unlockAch('allbios');
   save();
   var opts=document.querySelectorAll('.bio-option');
   for(var i=0;i<opts.length;i++)opts[i].classList.remove('selected');
@@ -1671,23 +1701,39 @@ function toggleCustomEx(i){
 }
 function finishWorkout(){
   S.workoutsDone=(S.workoutsDone||0)+1;
-  var t=new Date().toDateString();
-  if(S.lastWorkoutDate!==t){
+  var td=new Date().toDateString();
+  if(S.lastWorkoutDate!==td){
     var y=new Date();y.setDate(y.getDate()-1);
     S.streak=S.lastWorkoutDate===y.toDateString()?(S.streak||0)+1:1;
-    S.lastWorkoutDate=t;
+    S.lastWorkoutDate=td;
+  } else {S.streak=S.streak||1;}
+  gainXP(300);
+  var streakBonus=Math.min(150,Math.floor((S.streak||1)*2));
+  if(streakBonus>0)gainXP(streakBonus);
+  unlockAch('wk1');
+  var wd=S.workoutsDone;
+  if(wd>=10)unlockAch('wk10'); if(wd>=50)unlockAch('wk50');
+  if(wd>=100)unlockAch('wk100'); if(wd>=365)unlockAch('wk365'); if(wd>=1000)unlockAch('wk1000');
+  var st=S.streak;
+  if(st>=7)unlockAch('str7'); if(st>=30)unlockAch('str30');
+  if(st>=100)unlockAch('str100'); if(st>=365)unlockAch('str365');
+  updateMissionTrainDay();
+  checkPerfectDay();
+  checkMissionProgress();
+  save();renderHome();
+  alert('Treino completo! +300 XP + bônus streak!');
+}
+
+function checkPerfectDay(){
+  var td=new Date().toDateString();
+  if(S.lastWorkoutDate===td&&S.waterCount>=S.waterGoal&&(S.meals||[]).length>0){
+    if(S.lastPerfectDay!==td){
+      S.lastPerfectDay=td;
+      if(!S.missionData)S.missionData={};
+      gainXP(200);
+      updateMissionPerfectDay();
+    }
   }
-  unlockAch('first_workout');
-  if(S.streak>=7)unlockAch('week_streak');
-  if(S.streak>=30)unlockAch('streak_30');
-  if(S.streak>=100)unlockAch('streak_100');
-  if(S.streak>=365)unlockAch('streak_365');
-  if(S.workoutsDone>=10)unlockAch('wk_10');
-  if(S.workoutsDone>=50)unlockAch('wk_50');
-  if(S.workoutsDone>=100)unlockAch('wk_100');
-  if(S.workoutsDone>=365)unlockAch('wk_365');
-  gainXP(50);save();renderHome();
-  alert('Treino completo! +50 XP');
 }
 function addExercise(){
   var n=el('ex-nm').value.trim(),s=el('ex-sets').value.trim(),g=el('ex-grp').value.trim();
@@ -1707,200 +1753,205 @@ function rmCustomEx(i,e){
 }
 
 // ─────────────────────────────────────────────
-// MUSIC — IndexedDB persistent storage
+// MISSÕES SEMANAIS — Reset toda segunda-feira
 // ─────────────────────────────────────────────
-var tracks=[], curTrack=-1, aud=el('audio');
-var _idb=null;
-var IDB_NAME='grindcore_music', IDB_STORE='tracks', IDB_VER=1;
+var MISSIONS_DEF=[
+  {id:'m_train5',  l:'Guerreiro da Semana',   d:'Treine 5 dias esta semana',              xp:500,  track:'trainDays',   goal:5},
+  {id:'m_train7',  l:'Soldado de Ferro',       d:'Treine todos os 7 dias desta semana',    xp:900,  track:'trainDays',   goal:7},
+  {id:'m_water5',  l:'Fonte de Vida',          d:'Bata meta de água 5 dias esta semana',   xp:400,  track:'waterDays',   goal:5},
+  {id:'m_water7',  l:'Rio Sem Fim',            d:'Bata meta de água os 7 dias da semana',  xp:650,  track:'waterDays',   goal:7},
+  {id:'m_diet7',   l:'Chef da Semana',         d:'Registre refeição todos os dias',        xp:450,  track:'dietDays',    goal:7},
+  {id:'m_combo',   l:'Combo Letal',            d:'Treine 4 dias E bata água 4 dias',       xp:600,  track:'combo',       goal:4},
+  {id:'m_perfect3',l:'Trindade Perfeita',      d:'3 dias perfeitos (treino+água+dieta)',   xp:700,  track:'perfectDays', goal:3},
+  {id:'m_perfect5',l:'Máquina Perfeita',       d:'5 dias perfeitos nesta semana',          xp:1100, track:'perfectDays', goal:5},
+  {id:'m_finance', l:'Financeiro Organizado',  d:'Registre ao menos 3 lançamentos',       xp:300,  track:'txCount',     goal:3},
+  {id:'m_beast',   l:'Modo Besta',             d:'Acumule 5000+ XP nesta semana',         xp:800,  track:'weekXPTotal', goal:5000},
+  {id:'m_streak',  l:'Streak Mantido',         d:'Mantenha streak por 7 dias seguidos',   xp:750,  track:'streak',      goal:7},
+  {id:'m_abc',     l:'Trio de Treinos',        d:'Complete treinos A, B e C na semana',   xp:550,  track:'abcDone',     goal:3}
+];
 
-function idbOpen(cb){
-  if(_idb){cb(_idb);return;}
-  try{
-    var req=indexedDB.open(IDB_NAME,IDB_VER);
-    req.onupgradeneeded=function(e){
-      var db=e.target.result;
-      if(!db.objectStoreNames.contains(IDB_STORE))
-        db.createObjectStore(IDB_STORE,{keyPath:'name'});
+function getWeekKey(){
+  var d=new Date(),day=d.getDay()||7,mon=new Date(d);
+  mon.setDate(d.getDate()-(day-1));
+  return mon.toISOString().slice(0,10);
+}
+
+function getWeekMissions(){
+  var seed=0,wk=getWeekKey();
+  for(var ci=0;ci<wk.length;ci++)seed=(seed*31+wk.charCodeAt(ci))&0x7fffffff;
+  var avail=MISSIONS_DEF.slice();
+  for(var i=avail.length-1;i>0;i--){
+    seed=(seed*1103515245+12345)&0x7fffffff;
+    var j=seed%(i+1),tmp=avail[i];avail[i]=avail[j];avail[j]=tmp;
+  }
+  return avail.slice(0,5);
+}
+
+function getMissionState(){
+  var wk=getWeekKey();
+  if(!S.missionWeeks)S.missionWeeks={};
+  if(!S.missionWeeks[wk]){
+    S.missionWeeks[wk]={
+      missions:getWeekMissions().map(function(m){return{id:m.id,done:false,xpClaimed:false};}),
+      weekXPTotal:0,trainDays:0,waterDays:0,dietDays:0,
+      perfectDays:0,txCount:0,streak:0,abcDone:0,plansDone:{}
     };
-    req.onsuccess=function(e){_idb=e.target.result;cb(_idb);};
-    req.onerror=function(){cb(null);};
-  }catch(e){cb(null);}
+    save();
+  }
+  return S.missionWeeks[wk];
 }
 
-function idbSaveTrack(name,blob,cb){
-  idbOpen(function(db){
-    if(!db){if(cb)cb(false);return;}
-    try{
-      var tx=db.transaction(IDB_STORE,'readwrite');
-      tx.objectStore(IDB_STORE).put({name:name,blob:blob});
-      tx.oncomplete=function(){if(cb)cb(true);};
-      tx.onerror=function(){if(cb)cb(false);};
-    }catch(e){if(cb)cb(false);}
-  });
-}
-
-function idbDeleteTrack(name,cb){
-  idbOpen(function(db){
-    if(!db){if(cb)cb();return;}
-    try{
-      var tx=db.transaction(IDB_STORE,'readwrite');
-      tx.objectStore(IDB_STORE).delete(name);
-      tx.oncomplete=function(){if(cb)cb();};
-    }catch(e){if(cb)cb();}
-  });
-}
-
-function idbLoadAll(cb){
-  idbOpen(function(db){
-    if(!db){cb([]);return;}
-    try{
-      var tx=db.transaction(IDB_STORE,'readonly');
-      var req=tx.objectStore(IDB_STORE).getAll();
-      req.onsuccess=function(e){cb(e.target.result||[]);};
-      req.onerror=function(){cb([]);};
-    }catch(e){cb([]);}
-  });
-}
-
-function checkMusicAchs(){
-  if(tracks.length>=1)unlockAch('music_1');
-  if(tracks.length>=10)unlockAch('music_10');
-  if(tracks.length>=50)unlockAch('music_50');
+function trackWeeklyXP(n){
+  var ws=getMissionState();
+  ws.weekXPTotal=(ws.weekXPTotal||0)+n;
+  // Beast mode check
+  if(ws.weekXPTotal>=5000)unlockAch('mis_beast');
   save();
 }
-function idbInitTracks(){
-  idbLoadAll(function(rows){
-    if(!rows.length)return;
-    for(var i=0;i<rows.length;i++){
-      var r=rows[i];
-      try{
-        var url=URL.createObjectURL(r.blob);
-        var already=false;
-        for(var j=0;j<tracks.length;j++){if(tracks[j].name===r.name){already=true;break;}}
-        if(!already)tracks.push({name:r.name,url:url});
-      }catch(e){}
-    }
-    renderMusicLib();
-    checkMusicAchs();
-  });
-}
 
-function loadMP3(e){
-  var files=e.target.files;
-  if(!files||!files.length)return;
-  var total=files.length, done=0;
-  for(var i=0;i<files.length;i++){
-    (function(f){
-      if(!f.name.match(/\.(mp3|m4a|ogg|wav|flac|aac)$/i)&&
-         !(f.type&&f.type.indexOf('audio')===0)){done++;check();return;}
-      var already=false;
-      for(var j=0;j<tracks.length;j++){if(tracks[j].name===f.name){already=true;break;}}
-      if(already){done++;check();return;}
-      var reader=new FileReader();
-      reader.onload=function(ev){
-        var blob=new Blob([ev.target.result],{type:f.type||'audio/mpeg'});
-        var nm=f.name.replace(/\.(mp3|m4a|ogg|wav|flac|aac)$/i,'').replace(/[_\-]+/g,' ').trim();
-        var url=URL.createObjectURL(blob);
-        tracks.push({name:nm,url:url});
-        idbSaveTrack(f.name,blob,function(){done++;check();});
-      };
-      reader.onerror=function(){done++;check();};
-      reader.readAsArrayBuffer(f);
-    })(files[i]);
-  }
-  function check(){
-    if(done>=total){
-      renderMusicLib();
-      checkMusicAchs();
-      if(curTrack===-1&&tracks.length)playTrack(0);
-      e.target.value='';
-    }
+function getMissionProgress(m,ws){
+  switch(m.track){
+    case 'trainDays':   return ws.trainDays||0;
+    case 'waterDays':   return ws.waterDays||0;
+    case 'dietDays':    return ws.dietDays||0;
+    case 'perfectDays': return ws.perfectDays||0;
+    case 'txCount':     return ws.txCount||0;
+    case 'weekXPTotal': return ws.weekXPTotal||0;
+    case 'streak':      return S.streak||0;
+    case 'abcDone':     return ws.abcDone||0;
+    case 'combo':       return Math.min(ws.trainDays||0,ws.waterDays||0);
+    default: return 0;
   }
 }
 
-function removeTrack(i,ev){
-  if(ev)ev.stopPropagation();
-  var t=tracks[i];
-  if(!t)return;
-  try{URL.revokeObjectURL(t.url);}catch(e){}
-  // Find idb key (stored by original filename — approximate by name)
-  idbOpen(function(db){
-    if(!db)return;
-    try{
-      var tx=db.transaction(IDB_STORE,'readonly');
-      var req=tx.objectStore(IDB_STORE).getAll();
-      req.onsuccess=function(ev2){
-        var rows=ev2.target.result||[];
-        for(var j=0;j<rows.length;j++){
-          var nm=rows[j].name.replace(/\.(mp3|m4a|ogg|wav|flac|aac)$/i,'').replace(/[_\-]+/g,' ').trim();
-          if(nm===t.name){idbDeleteTrack(rows[j].name);break;}
-        }
-      };
-    }catch(e){}
-  });
-  if(curTrack===i){aud.pause();curTrack=-1;el('music-bar').classList.remove('visible');}
-  else if(curTrack>i){curTrack--;}
-  tracks.splice(i,1);
-  renderMusicLib();
+function checkMissionProgress(){
+  var ws=getMissionState(),wms=getWeekMissions(),needSave=false;
+  ws.streak=S.streak||0;
+  for(var i=0;i<wms.length;i++){
+    var m=wms[i];
+    if(!ws.missions[i])ws.missions[i]={id:m.id,done:false,xpClaimed:false};
+    var ms=ws.missions[i];
+    if(ms.done&&ms.xpClaimed)continue;
+    var progress=getMissionProgress(m,ws);
+    if(progress>=m.goal&&!ms.done){
+      ms.done=true;needSave=true;
+      if(!ms.xpClaimed){
+        ms.xpClaimed=true;
+        if(!S.totalMissionsCompleted)S.totalMissionsCompleted=0;
+        S.totalMissionsCompleted++;
+        var tc=S.totalMissionsCompleted;
+        if(tc>=10)unlockAch('mis10'); if(tc>=50)unlockAch('mis50'); if(tc>=100)unlockAch('mis100');
+        if(ws.perfectDays>=5)unlockAch('mis_perf');
+        gainXP(m.xp);
+        showXPToast('+'+m.xp+' XP — '+m.l);
+      }
+    }
+  }
+  if(needSave)save();
+  var pg=el('p-missoes');
+  if(pg&&pg.classList.contains('active'))renderMissions();
 }
 
-function renderMusicLib(){
-  var list=el('track-list'),none=el('no-tracks');
-  list.innerHTML='';
-  none.style.display=tracks.length?'none':'block';
-  for(var i=0;i<tracks.length;i++){
-    var t=tracks[i],item=document.createElement('div');
-    item.className='wi'+(i===curTrack?' done':'');
-    item.innerHTML='<div class="wi-num">'+(i+1)+'</div>'
-      +'<div class="wi-body"><div class="wi-name">'+t.name+'</div></div>'
-      +'<div style="display:flex;gap:6px;flex-shrink:0">'
-      +'<button class="btn btn-sm" onclick="playTrack('+i+',event)">&#9654;</button>'
-      +'<button class="btn btn-sm btn-danger" onclick="removeTrack('+i+',event)" style="padding:7px 10px">&#215;</button>'
+function showXPToast(msg){
+  var t=document.createElement('div');
+  t.textContent=msg;
+  t.style.cssText='position:fixed;top:70px;left:50%;transform:translateX(-50%) translateY(-20px);background:var(--accent);color:#000;padding:10px 20px;border-radius:8px;font-weight:700;font-size:.85rem;z-index:9999;opacity:0;transition:all .4s cubic-bezier(.16,1,.3,1);pointer-events:none;white-space:nowrap;max-width:90vw;text-align:center';
+  document.body.appendChild(t);
+  requestAnimationFrame(function(){
+    t.style.opacity='1';t.style.transform='translateX(-50%) translateY(0)';
+    setTimeout(function(){
+      t.style.opacity='0';t.style.transform='translateX(-50%) translateY(-16px)';
+      setTimeout(function(){t.remove();},400);
+    },2800);
+  });
+}
+
+function updateMissionTrainDay(){
+  var ws=getMissionState(),td=new Date().toDateString();
+  if(S.lastMissionTrainDay!==td){
+    S.lastMissionTrainDay=td;ws.trainDays=(ws.trainDays||0)+1;
+    if(!ws.plansDone)ws.plansDone={};
+    if(S.todayWorkout){
+      var n=S.todayWorkout.toUpperCase();
+      // Match plan name ending in A, B, or C
+      if(/\bA\b/.test(n)||/ A$/.test(n)||/^A /.test(n))ws.plansDone.A=true;
+      if(/\bB\b/.test(n)||/ B$/.test(n)||/^B /.test(n))ws.plansDone.B=true;
+      if(/\bC\b/.test(n)||/ C$/.test(n)||/^C /.test(n))ws.plansDone.C=true;
+      ws.abcDone=Object.keys(ws.plansDone).length;
+    }
+    save();
+  }
+}
+
+function updateMissionWaterDay(){
+  var ws=getMissionState(),td=new Date().toDateString();
+  if(S.lastMissionWaterDay!==td){S.lastMissionWaterDay=td;ws.waterDays=(ws.waterDays||0)+1;save();}
+}
+
+function updateMissionDietDay(){
+  var ws=getMissionState(),td=new Date().toDateString();
+  if(S.lastMissionDietDay!==td){S.lastMissionDietDay=td;ws.dietDays=(ws.dietDays||0)+1;save();}
+}
+
+function updateMissionPerfectDay(){
+  var ws=getMissionState(),td=new Date().toDateString();
+  if(S.lastMissionPerfectDay!==td){S.lastMissionPerfectDay=td;ws.perfectDays=(ws.perfectDays||0)+1;save();}
+}
+
+function renderMissions(){
+  var ws=getMissionState(),wms=getWeekMissions();
+  var list=el('missions-list');if(!list)return;list.innerHTML='';
+  var totalEarned=0;
+  for(var i=0;i<wms.length;i++){
+    var m=wms[i];
+    if(!ws.missions[i])ws.missions[i]={id:m.id,done:false,xpClaimed:false};
+    var ms=ws.missions[i];
+    var progress=getMissionProgress(m,ws);
+    var pct=Math.min(100,Math.round((progress/m.goal)*100));
+    var done=ms.done;
+    if(done)totalEarned+=m.xp;
+    var card=document.createElement('div');
+    card.className='card';card.style.marginBottom='10px';
+    if(done){card.style.borderColor='rgba(0,255,136,.3)';card.style.opacity='.72';}
+    card.innerHTML='<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px">'
+      +'<div style="flex:1;min-width:0">'
+      +'<div style="font-size:.88rem;font-weight:700;'+(done?'color:var(--text3)':'')+'">'+m.l+'</div>'
+      +'<div style="font-size:.72rem;color:var(--text3);margin-top:2px">'+m.d+'</div>'
+      +'<div class="prog-track" style="margin-top:8px"><div class="prog-fill" style="width:'+pct+'%"></div></div>'
+      +'<div style="display:flex;justify-content:space-between;margin-top:3px">'
+      +'<span style="font-size:.62rem;color:var(--text3)">'+progress+' / '+m.goal+'</span>'
+      +'<span style="font-size:.62rem;color:var(--text3)">'+pct+'%</span></div></div>'
+      +(done
+        ?'<span class="badge" style="flex-shrink:0;margin-top:2px">Completa</span>'
+        :'<span style="font-size:.72rem;font-weight:700;color:var(--accent);flex-shrink:0;white-space:nowrap;margin-top:2px">+'+m.xp+' XP</span>')
       +'</div>';
-    (function(idx){item.onclick=function(){playTrack(idx);};})(i);
-    list.appendChild(item);
+    list.appendChild(card);
   }
+  var xpb=el('missions-xp-badge');if(xpb)xpb.textContent=totalEarned+' XP ganhos';
+  var wxp=el('week-xp-total');if(wxp)wxp.textContent=(ws.weekXPTotal||0)+' XP';
+  var wbar=el('week-xp-bar');if(wbar)wbar.style.width=Math.min(100,((ws.weekXPTotal||0)/5000)*100)+'%';
+  renderMissionsHistory();
 }
 
-function playTrack(i,e){
-  if(e)e.stopPropagation();
-  curTrack=i;
-  try{
-    aud.pause();aud.src='';aud.load();
-    aud.src=tracks[i].url;
-    var p=aud.play();
-    if(p&&p.catch)p.catch(function(){
-      el('music-track-name').textContent=tracks[i].name+' — toque play';
-    });
-  }catch(err){}
-  el('music-bar').classList.add('visible');
-  el('music-track-name').textContent=tracks[i].name;
-  updatePlayIcon(true);renderMusicLib();
-}
-function togglePlay(){
-  if(aud.paused){aud.play().catch(function(){});updatePlayIcon(true);}
-  else{aud.pause();updatePlayIcon(false);}
-}
-function updatePlayIcon(p){
-  el('play-icon').innerHTML=p
-    ?'<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>'
-    :'<polygon points="5 3 19 12 5 21 5 3"/>';
-}
-function nextTrack(){if(tracks.length)playTrack((curTrack+1)%tracks.length);}
-function prevTrack(){if(tracks.length)playTrack((curTrack-1+tracks.length)%tracks.length);}
-function seekAudio(e){
-  if(!aud.duration)return;
-  var r=e.currentTarget.getBoundingClientRect();
-  aud.currentTime=((e.clientX-r.left)/r.width)*aud.duration;
-}
-aud.addEventListener('timeupdate',function(){
-  if(aud.duration){
-    el('music-prog-fill').style.width=((aud.currentTime/aud.duration)*100)+'%';
-    var m=Math.floor(aud.currentTime/60),s=Math.floor(aud.currentTime%60);
-    el('music-time').textContent=m+':'+(s<10?'0':'')+s;
+function renderMissionsHistory(){
+  var h=el('missions-history');if(!h)return;h.innerHTML='';
+  var curWk=getWeekKey();
+  if(!S.missionWeeks||Object.keys(S.missionWeeks).length<=1){
+    h.innerHTML='<div style="color:var(--text3);font-size:.8rem;text-align:center;padding:16px 0">Complete sua primeira semana para ver o histórico</div>';
+    return;
   }
-});
-aud.addEventListener('ended',nextTrack);
+  var wks=Object.keys(S.missionWeeks).filter(function(k){return k!==curWk;}).sort().reverse().slice(0,6);
+  wks.forEach(function(wk){
+    var ws=S.missionWeeks[wk];
+    var done=(ws.missions||[]).filter(function(m){return m.done;}).length;
+    var d=document.createElement('div');d.className='card card-sm';d.style.marginBottom='8px';
+    d.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center">'
+      +'<div><div style="font-size:.82rem;font-weight:600">Semana '+wk+'</div>'
+      +'<div style="font-size:.7rem;color:var(--text3)">'+done+'/5 missões &nbsp;&#183;&nbsp; '+(ws.weekXPTotal||0)+' XP</div></div>'
+      +'<div class="badge">'+done+'/5</div></div>';
+    h.appendChild(d);
+  });
+}
 
 // ─────────────────────────────────────────────
 // DIET
@@ -1945,12 +1996,16 @@ function addMeal(){
   if(!S.meals)S.meals=[];
   S.meals.push({name:n,kcal:+(el('meal-kcal').value)||0,prot:+(el('meal-prot').value)||0,carb:+(el('meal-carb').value)||0,fat:+(el('meal-fat').value)||0});
   if(!S.totalMealsEver)S.totalMealsEver=0;S.totalMealsEver++;
-  if(!S.totalKcalEver)S.totalKcalEver=0;S.totalKcalEver+=(+(el('meal-kcal').value)||0);
-  gainXP(10);
-  if(S.totalMealsEver>=10)unlockAch('diet_10');
-  if(S.totalMealsEver>=100)unlockAch('diet_100');
-  if(S.totalMealsEver>=500)unlockAch('diet_500');
-  if(S.totalKcalEver>=10000)unlockAch('kcal_10k');
+  if(!S.totalKcalEver)S.totalKcalEver=0;
+  var mkcal=+(el('meal-kcal').value)||0;S.totalKcalEver+=mkcal;
+  var todayMeals=(S.meals||[]).length;
+  if(todayMeals<=5)gainXP(50);
+  var tm=S.totalMealsEver;
+  if(tm>=10)unlockAch('diet10'); if(tm>=100)unlockAch('diet100');
+  if(tm>=500)unlockAch('diet500'); if(tm>=1000)unlockAch('diet1000');
+  if(S.totalKcalEver>=10000)unlockAch('kcal10k');
+  if(S.totalKcalEver>=100000)unlockAch('kcal100k');
+  updateMissionDietDay();checkPerfectDay();checkMissionProgress();
   save();closeModal('m-addmeal');
   ['meal-nm','meal-kcal','meal-prot','meal-carb','meal-fat'].forEach(function(id){el(id).value='';});
   renderDiet();
@@ -1970,9 +2025,9 @@ function renderFinance(){
   el('exp-pg').textContent='R$'+fmt(b.me);el('balm-pg').textContent='R$'+fmt(b.mn);
   var goal=S.finGoal||5000,pct=Math.min(100,(b.t/goal)*100);
   el('fgoal-d').textContent=fmt(goal);el('fprog').style.width=pct+'%';el('fpct').textContent=Math.round(pct);
-  if(b.t>=1000)unlockAch('money_1k');
-  if(b.t>=10000)unlockAch('money_10k');
-  if(b.t>=100000)unlockAch('money_100k');
+  if(b.t>=1000)unlockAch('fin1k');
+  if(b.t>=10000)unlockAch('fin10k');
+  if(b.t>=100000)unlockAch('fin100k');
   var tl=el('tx-list');tl.innerHTML='';var txs=S.transactions||[];
   if(!txs.length){tl.innerHTML='<div style="color:var(--text3);font-size:.8rem;padding:16px 0;text-align:center">Nenhum lancamento registrado</div>';renderHome();return;}
   for(var i=txs.length-1;i>=0;i--){
@@ -1991,10 +2046,10 @@ function addTx(){
   if(!desc||!val){alert('Preencha todos os campos!');return;}
   if(!S.transactions)S.transactions=[];
   S.transactions.push({type:type,desc:desc,amount:val,date:new Date().toISOString()});
-  gainXP(5);
+  gainXP(30);
   var txLen=S.transactions.length;
-  if(txLen>=50)unlockAch('tx_50');
-  if(txLen>=200)unlockAch('tx_200');
+  if(txLen>=50)unlockAch('tx50'); if(txLen>=200)unlockAch('tx200');
+  var ws_tx=getMissionState();ws_tx.txCount=(ws_tx.txCount||0)+1;checkMissionProgress();
   save();closeModal('m-addtx');el('tx-desc').value='';el('tx-val').value='';renderFinance();
 }
 function rmTx(i){S.transactions.splice(i,1);save();renderFinance();}
