@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#050505">
-<title>GRINDCORE</title>
+<title>App</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
@@ -37,55 +37,88 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 /* SPLASH */
 #splash{
   position:fixed;inset:0;z-index:9999;
-  background:var(--bg);
+  background:#020202;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   gap:0;overflow:hidden;
 }
 .splash-bg{
   position:absolute;inset:0;
-  background:radial-gradient(ellipse at 30% 60%,rgba(0,255,136,.07) 0%,transparent 60%),
-             radial-gradient(ellipse at 80% 20%,rgba(0,229,204,.05) 0%,transparent 50%);
+  background:
+    radial-gradient(ellipse at 50% 40%,rgba(0,255,136,.09) 0%,transparent 55%),
+    radial-gradient(ellipse at 20% 80%,rgba(0,229,204,.05) 0%,transparent 45%),
+    radial-gradient(ellipse at 85% 15%,rgba(0,200,120,.04) 0%,transparent 40%);
 }
-.splash-grid{
+.splash-particles{
   position:absolute;inset:0;
-  background-image:linear-gradient(rgba(0,255,136,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,136,.03) 1px,transparent 1px);
-  background-size:60px 60px;
+  background-image:
+    radial-gradient(circle,rgba(0,255,136,.4) 1px,transparent 1px),
+    radial-gradient(circle,rgba(0,229,204,.3) 1px,transparent 1px);
+  background-size:120px 120px, 80px 80px;
+  background-position:0 0, 40px 40px;
+  opacity:.12;
+  animation:particleDrift 20s linear infinite;
 }
-.splash-line{
+@keyframes particleDrift{0%{transform:translateY(0)}100%{transform:translateY(-120px)}}
+.splash-vline{
   width:1px;height:0;
-  background:linear-gradient(to bottom,transparent,var(--accent),transparent);
-  animation:lineGrow .8s .2s cubic-bezier(.16,1,.3,1) forwards;
-  margin-bottom:32px;
+  background:linear-gradient(to bottom,transparent,rgba(0,255,136,.8),transparent);
+  animation:vlineGrow 1s .1s cubic-bezier(.16,1,.3,1) forwards;
+  margin-bottom:40px;position:relative;z-index:1;
 }
-@keyframes lineGrow{to{height:80px}}
+@keyframes vlineGrow{to{height:90px}}
+.splash-orb{
+  position:absolute;
+  width:300px;height:300px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(0,255,136,.06) 0%,transparent 70%);
+  animation:orbPulse 3s ease-in-out infinite;
+  top:50%;left:50%;transform:translate(-50%,-50%);
+}
+@keyframes orbPulse{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:.5}50%{transform:translate(-50%,-50%) scale(1.3);opacity:1}}
 .splash-tag{
-  font-family:var(--font-display);
-  font-size:clamp(1.6rem,6vw,3.2rem);
-  letter-spacing:.18em;
-  color:var(--accent);
-  text-shadow:0 0 60px rgba(0,255,136,.4);
-  opacity:0;margin-bottom:8px;
-  animation:fadeSlide .8s .7s cubic-bezier(.16,1,.3,1) forwards;
+  font-family:var(--font-body);
+  font-size:clamp(1rem,4vw,1.5rem);
+  font-weight:300;
+  letter-spacing:.35em;
+  color:rgba(255,255,255,.5);
+  opacity:0;margin-bottom:18px;
+  text-transform:uppercase;
+  animation:fadeSlide .9s .8s cubic-bezier(.16,1,.3,1) forwards;
+  position:relative;z-index:1;
+  text-align:center;padding:0 20px;
 }
 .splash-sub{
-  font-size:.75rem;letter-spacing:.3em;color:var(--text3);text-transform:uppercase;
-  opacity:0;margin-bottom:48px;
-  animation:fadeSlide .8s .95s cubic-bezier(.16,1,.3,1) forwards;
+  font-size:.65rem;letter-spacing:.5em;color:rgba(0,255,136,.35);text-transform:uppercase;
+  opacity:0;margin-bottom:56px;
+  animation:fadeSlide .8s 1.05s cubic-bezier(.16,1,.3,1) forwards;
+  position:relative;z-index:1;
 }
 .splash-btn{
-  padding:.85rem 3.5rem;
-  border:1px solid rgba(0,255,136,.4);
-  background:rgba(0,255,136,.06);
-  color:var(--accent);
-  font-family:var(--font-display);
-  font-size:1.1rem;letter-spacing:.25em;
-  cursor:pointer;border-radius:var(--radius-sm);
+  padding:.9rem 4rem;
+  border:1px solid rgba(0,255,136,.25);
+  background:transparent;
+  color:rgba(0,255,136,.85);
+  font-family:var(--font-body);
+  font-size:.78rem;font-weight:600;letter-spacing:.4em;
+  text-transform:uppercase;
+  cursor:pointer;border-radius:999px;
   opacity:0;
-  animation:fadeSlide .8s 1.2s cubic-bezier(.16,1,.3,1) forwards;
-  transition:all .3s;backdrop-filter:blur(10px);
+  animation:fadeSlide .8s 1.3s cubic-bezier(.16,1,.3,1) forwards;
+  transition:all .35s cubic-bezier(.16,1,.3,1);
+  backdrop-filter:blur(12px);
+  position:relative;z-index:1;
 }
-.splash-btn:hover{background:rgba(0,255,136,.15);border-color:var(--accent);box-shadow:0 0 40px rgba(0,255,136,.2);}
-@keyframes fadeSlide{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.splash-btn::before{
+  content:'';position:absolute;inset:0;border-radius:999px;
+  background:rgba(0,255,136,.06);
+  transition:opacity .3s;
+}
+.splash-btn:hover{
+  border-color:rgba(0,255,136,.6);color:var(--accent);
+  box-shadow:0 0 50px rgba(0,255,136,.15),0 0 20px rgba(0,255,136,.08);
+  letter-spacing:.5em;
+}
+@keyframes fadeSlide{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
 
 /* APP */
 #app{position:fixed;inset:0;display:none;flex-direction:column;background:var(--bg)}
@@ -93,26 +126,24 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 
 /* TOP NAV BAR */
 #topbar{
-  height:56px;min-height:56px;
+  height:58px;min-height:58px;
   display:flex;align-items:center;justify-content:space-between;
-  padding:0 20px;
-  background:rgba(5,5,5,.85);
-  backdrop-filter:blur(20px) saturate(180%);
-  border-bottom:1px solid var(--border);
+  padding:0 18px;
+  background:rgba(4,4,4,.92);
+  backdrop-filter:blur(28px) saturate(200%);
+  -webkit-backdrop-filter:blur(28px) saturate(200%);
+  border-bottom:1px solid rgba(255,255,255,.04);
   flex-shrink:0;
   position:relative;z-index:10;
+  box-shadow:0 1px 0 rgba(0,255,136,.03);
 }
-.tb-logo{
-  font-family:var(--font-display);
-  font-size:1.35rem;letter-spacing:.2em;
-  background:linear-gradient(135deg,var(--accent),var(--accent2));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-}
+
 .tb-right{display:flex;align-items:center;gap:10px}
 .tb-lvl{
   display:flex;align-items:center;gap:8px;
   background:var(--surface);border:1px solid var(--border);
   border-radius:999px;padding:4px 12px 4px 4px;
+  transition:border-color .2s;
 }
 .tb-lvl-ring{
   width:28px;height:28px;border-radius:50%;
@@ -148,20 +179,29 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 /* BOTTOM NAV */
 #nav{
   position:fixed;bottom:0;left:0;right:0;
-  height:72px;
-  background:rgba(5,5,5,.92);
-  backdrop-filter:blur(30px) saturate(200%);
-  border-top:1px solid var(--border);
-  display:flex;align-items:center;justify-content:space-around;
-  padding:0 4px;
+  height:74px;
+  background:rgba(3,3,3,.95);
+  backdrop-filter:blur(40px) saturate(220%);
+  -webkit-backdrop-filter:blur(40px) saturate(220%);
+  border-top:1px solid rgba(255,255,255,.04);
+  box-shadow:0 -1px 0 rgba(0,0,0,.6);
+  display:flex;align-items:center;
+  padding:0;
   padding-bottom:env(safe-area-inset-bottom,0);
   z-index:100;
+  overflow-x:auto;overflow-y:hidden;
+  scroll-snap-type:x mandatory;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
 }
+#nav::-webkit-scrollbar{display:none}
 .nb{
   display:flex;flex-direction:column;align-items:center;gap:3px;
   background:none;border:none;cursor:pointer;
-  padding:8px 14px;border-radius:var(--radius-sm);
-  position:relative;transition:all .2s;flex:1;
+  padding:8px 10px;border-radius:var(--radius-sm);
+  position:relative;transition:all .2s;
+  flex:0 0 auto;min-width:62px;
+  scroll-snap-align:start;
 }
 .nb-icon{
   width:22px;height:22px;fill:none;stroke:var(--text3);stroke-width:1.5;
@@ -179,26 +219,28 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 
 /* SECTION TITLE */
 .sec-title{
-  font-size:.6rem;letter-spacing:.2em;color:var(--text3);
+  font-size:.58rem;letter-spacing:.22em;color:rgba(255,255,255,.25);
   text-transform:uppercase;font-weight:500;
   margin:24px 0 10px;display:flex;align-items:center;gap:10px;
 }
-.sec-title::after{content:'';flex:1;height:1px;background:var(--border)}
+.sec-title::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.04)}
 
 /* CARDS */
 .card{
-  background:var(--surface);
-  border:1px solid var(--border);
+  background:rgba(24,24,24,.9);
+  border:1px solid rgba(255,255,255,.055);
   border-radius:var(--radius);
   padding:16px;margin-bottom:12px;
-  transition:border-color .2s;
+  transition:border-color .25s,box-shadow .25s,transform .2s;
   position:relative;overflow:hidden;
+  backdrop-filter:blur(4px);
 }
 .card::before{
   content:'';position:absolute;inset:0;
-  background:linear-gradient(135deg,rgba(0,255,136,.03),transparent);
+  background:linear-gradient(135deg,rgba(255,255,255,.025) 0%,transparent 60%);
   pointer-events:none;border-radius:inherit;
 }
+.card:hover{border-color:rgba(255,255,255,.09)}
 .card-sm{padding:12px}
 .card-accent{border-color:rgba(0,255,136,.25)}
 .card-label{font-size:.58rem;letter-spacing:.18em;color:var(--text3);text-transform:uppercase;font-weight:500;margin-bottom:6px}
@@ -251,17 +293,24 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 /* BUTTONS */
 .btn{
   padding:11px 22px;
-  border:1px solid rgba(0,255,136,.3);
-  background:rgba(0,255,136,.06);
+  border:1px solid rgba(0,255,136,.2);
+  background:rgba(0,255,136,.05);
   color:var(--accent);
   font-family:var(--font-body);font-size:.82rem;font-weight:600;
   cursor:pointer;border-radius:var(--radius-sm);
-  transition:all .2s;letter-spacing:.03em;
+  transition:all .25s cubic-bezier(.16,1,.3,1);letter-spacing:.03em;
+  position:relative;overflow:hidden;
 }
-.btn:hover{background:rgba(0,255,136,.12);border-color:rgba(0,255,136,.5);box-shadow:0 4px 20px rgba(0,255,136,.1)}
-.btn:active{transform:scale(.97)}
-.btn-solid{background:var(--accent);color:#000;border-color:var(--accent);font-weight:700}
-.btn-solid:hover{background:var(--accent2);border-color:var(--accent2);box-shadow:0 4px 24px rgba(0,255,136,.3)}
+.btn::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,.04),transparent);
+  pointer-events:none;
+}
+.btn:hover{background:rgba(0,255,136,.1);border-color:rgba(0,255,136,.4);box-shadow:0 4px 24px rgba(0,255,136,.08)}
+.btn:active{transform:scale(.96)}
+.btn-solid{background:var(--accent);color:#060606;border-color:var(--accent);font-weight:700;letter-spacing:.04em}
+.btn-solid::after{background:linear-gradient(135deg,rgba(255,255,255,.15),transparent)}
+.btn-solid:hover{filter:brightness(1.08);box-shadow:0 6px 28px rgba(0,255,136,.3)}
 .btn-danger{border-color:rgba(255,68,102,.3);color:var(--danger);background:rgba(255,68,102,.05)}
 .btn-danger:hover{background:rgba(255,68,102,.12)}
 .btn-full{width:100%;display:block;text-align:center}
@@ -514,11 +563,12 @@ select option{background:var(--bg2)}
 <!-- SPLASH -->
 <div id="splash">
   <div class="splash-bg"></div>
-  <div class="splash-grid"></div>
-  <div class="splash-line"></div>
-  <div class="splash-tag">VOCE RECEBEU UMA NOVA CHANCE</div>
+  <div class="splash-particles"></div>
+  <div class="splash-orb"></div>
+  <div class="splash-vline"></div>
+  <div class="splash-tag">Voce recebeu uma nova chance</div>
   <div class="splash-sub">sua jornada comeca agora</div>
-  <button class="splash-btn" onclick="enterApp()">INICIAR</button>
+  <button class="splash-btn" onclick="enterApp()">Comecar</button>
 </div>
 
 <!-- APP -->
@@ -526,11 +576,28 @@ select option{background:var(--bg2)}
 
   <!-- TOP BAR -->
   <div id="topbar">
-    <div class="tb-logo">GRINDCORE</div>
-    <div class="tb-right">
+    <!-- left: level pill + streak -->
+    <div style="display:flex;align-items:center;gap:10px">
       <div class="tb-lvl">
         <div class="tb-lvl-ring" id="tb-lvl-ring">1</div>
-        <div class="tb-lvl-txt">LEVEL</div>
+        <div>
+          <div class="tb-lvl-txt" id="tb-lvl-title">Novato</div>
+          <div style="font-size:.55rem;color:var(--text3);letter-spacing:.04em">LEVEL</div>
+        </div>
+      </div>
+      <!-- streak badge -->
+      <div id="tb-streak-badge" style="display:flex;align-items:center;gap:4px;background:var(--surface);border:1px solid var(--border);border-radius:999px;padding:4px 10px;opacity:.85">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--warn)" stroke-width="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        <span id="tb-streak-val" style="font-size:.7rem;color:var(--warn);font-weight:700;letter-spacing:.04em">0</span>
+      </div>
+    </div>
+    <!-- right: xp mini bar + settings -->
+    <div style="display:flex;align-items:center;gap:8px">
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px">
+        <div style="font-size:.6rem;color:var(--text3);letter-spacing:.1em" id="tb-xp-txt">0 XP</div>
+        <div style="width:80px;height:3px;background:rgba(255,255,255,.06);border-radius:99px;overflow:hidden">
+          <div id="tb-xp-bar" style="height:100%;background:linear-gradient(90deg,var(--accent3),var(--accent));border-radius:99px;width:0%;transition:width .6s ease"></div>
+        </div>
       </div>
       <div class="tb-settings" onclick="openSettings()">
         <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
@@ -784,6 +851,49 @@ select option{background:var(--bg2)}
       <div id="ach-list"></div>
     </div>
 
+
+    <!-- ARTES MARCIAIS -->
+    <div class="page" id="p-marcial">
+      <div style="margin-bottom:16px">
+        <div style="font-size:1.1rem;font-weight:700">Artes Marciais</div>
+        <div style="font-size:.72rem;color:var(--text3);margin-top:2px">Aprenda tecnicas reais — do zero ao avancado</div>
+      </div>
+
+      <!-- SELECTOR DE ARTE -->
+      <div class="tab-wrap" id="martial-art-tabs" style="flex-wrap:wrap;gap:4px">
+        <button class="tab-btn on" onclick="switchMartial('mma')">MMA</button>
+        <button class="tab-btn" onclick="switchMartial('muay')">Muay Thai</button>
+        <button class="tab-btn" onclick="switchMartial('bjj')">BJJ</button>
+        <button class="tab-btn" onclick="switchMartial('boxe')">Boxe</button>
+        <button class="tab-btn" onclick="switchMartial('judo')">Judo</button>
+        <button class="tab-btn" onclick="switchMartial('karate')">Karate</button>
+        <button class="tab-btn" onclick="switchMartial('wrestling')">Wrestling</button>
+        <button class="tab-btn" onclick="switchMartial('capoeira')">Capoeira</button>
+      </div>
+
+      <div id="martial-content"></div>
+    </div>
+
+    <!-- IDIOMAS -->
+    <div class="page" id="p-idiomas">
+      <div style="margin-bottom:16px">
+        <div style="font-size:1.1rem;font-weight:700">Idiomas</div>
+        <div style="font-size:.72rem;color:var(--text3);margin-top:2px">Aprenda um novo idioma com rotina diaria</div>
+      </div>
+
+      <div class="tab-wrap" id="lang-tabs" style="flex-wrap:wrap;gap:4px">
+        <button class="tab-btn on" onclick="switchLang('en')">Ingles</button>
+        <button class="tab-btn" onclick="switchLang('es')">Espanhol</button>
+        <button class="tab-btn" onclick="switchLang('jp')">Japones</button>
+        <button class="tab-btn" onclick="switchLang('zh')">Chines</button>
+        <button class="tab-btn" onclick="switchLang('fr')">Frances</button>
+        <button class="tab-btn" onclick="switchLang('de')">Alemao</button>
+        <button class="tab-btn" onclick="switchLang('it')">Italiano</button>
+        <button class="tab-btn" onclick="switchLang('ru')">Russo</button>
+      </div>
+
+      <div id="lang-content"></div>
+    </div>
   </div><!-- /pages -->
 
   <!-- BOTTOM NAV -->
@@ -811,6 +921,14 @@ select option{background:var(--bg2)}
     <button class="nb" onclick="goPage('nivel',this)">
       <svg class="nb-icon" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
       <span class="nb-label">NIVEL</span>
+    </button>
+    <button class="nb" onclick="goPage('marcial',this)">
+      <svg class="nb-icon" viewBox="0 0 24 24"><path d="M14.5 10c-.83 0-1.5-.67-1.5-1.5v-5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5z"/><path d="M20.5 10H19V8.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/><path d="M9.5 14c.83 0 1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5S8 21.33 8 20.5v-5c0-.83.67-1.5 1.5-1.5z"/><path d="M3.5 14H5v1.5c0 .83-.67 1.5-1.5 1.5S2 16.33 2 15.5 2.67 14 3.5 14z"/><path d="M14 14.5c0-.83.67-1.5 1.5-1.5h5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5h-5c-.83 0-1.5-.67-1.5-1.5z"/><path d="M15.5 19H14v1.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5-.67-1.5-1.5-1.5z"/><path d="M10 9.5C10 8.67 9.33 8 8.5 8h-5C2.67 8 2 8.67 2 9.5S2.67 11 3.5 11h5c.83 0 1.5-.67 1.5-1.5z"/><path d="M8.5 5H10V3.5C10 2.67 9.33 2 8.5 2S7 2.67 7 3.5 7.67 5 8.5 5z"/></svg>
+      <span class="nb-label">MARCIAL</span>
+    </button>
+    <button class="nb" onclick="goPage('idiomas',this)">
+      <svg class="nb-icon" viewBox="0 0 24 24"><path d="M5 8l6 6"/><path d="M4 14l6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="M22 22l-5-10-5 10"/><path d="M14 18h6"/></svg>
+      <span class="nb-label">IDIOMAS</span>
     </button>
   </nav>
 </div>
@@ -939,9 +1057,7 @@ select option{background:var(--bg2)}
   </div>
 </div>
 
-
 <script>
-
 // ─────────────────────────────────────────────
 // STATE - PERSISTENT ACROSS ALL ENVIRONMENTS
 // ─────────────────────────────────────────────
@@ -1422,6 +1538,8 @@ function goPage(id,btn){
   if(id==='treinos')renderWorkouts();
   if(id==='home')renderHome();
   if(id==='missoes')renderMissions();
+  if(id==='marcial')renderMartial('mma');
+  if(id==='idiomas')renderLang('en');
 }
 
 // ─────────────────────────────────────────────
@@ -1440,6 +1558,8 @@ function closeSettings(){el('settings-panel').classList.remove('open');}
 function renderAll(){
   renderHome();renderWorkouts();renderDiet();renderFinance();renderLevel();renderMissions();
   initBioSelector();
+  renderMartial('mma');
+  renderLang('en');
   // Restore settings inputs
   if(S.finGoal)el('fgoal-settings').value=S.finGoal;
   el('water-goal-input').value=S.waterGoal;
@@ -1474,6 +1594,20 @@ function renderHome(){
   var b=calcBal();
   el('bal-home').textContent='R$'+fmt(b.t);
   el('inc-home').textContent='R$'+fmt(b.mi);
+  // Update topbar mini elements
+  updateTopbar();
+}
+
+function updateTopbar(){
+  var lv=S.level,need=xpParaProximoLevel(lv)||100,pct=Math.min(100,(S.xp/need)*100);
+  var lvEl=el('tb-lvl-ring');if(lvEl)lvEl.textContent=lv;
+  var titEl=el('tb-lvl-title');if(titEl)titEl.textContent=getLevelTitle(lv);
+  var xpEl=el('tb-xp-txt');if(xpEl)xpEl.textContent=S.xp+' / '+need+' XP';
+  var xpBar=el('tb-xp-bar');if(xpBar)xpBar.style.width=pct+'%';
+  var strEl=el('tb-streak-val');if(strEl)strEl.textContent=S.streak||0;
+  // Highlight streak badge when active
+  var strBadge=el('tb-streak-badge');
+  if(strBadge)strBadge.style.borderColor=S.streak>=7?'var(--warn)':'var(--border)';
 }
 
 function calcBal(){
@@ -1558,7 +1692,7 @@ function gainXP(n){
   if(lv>=500)unlockAch('lv500'); if(lv>=1000)unlockAch('lv1000');
   if(lv>=2500)unlockAch('lv2500');if(lv>=5000)unlockAch('lv5000');
   if(lv>=7000)unlockAch('lv7000');
-  save();renderHome();renderLevel();
+  save();renderHome();renderLevel();updateTopbar();
 }
 
 function unlockAch(id){if(!S.achievements[id]){S.achievements[id]=true;save();}}
@@ -2129,6 +2263,802 @@ function renderLevel(){
 function resetAll(){
   localStorage.removeItem(STORE_KEY);
   location.reload();
+}
+
+
+// ─────────────────────────────────────────────
+// ARTES MARCIAIS
+// ─────────────────────────────────────────────
+var MARTIAL_ARTS={
+  mma:{
+    name:'MMA — Mixed Martial Arts',
+    desc:'A arte completa. Combinacao de striking, grappling e defesa no chao. Utilizada no UFC e organizacoes ao redor do mundo.',
+    levels:[
+      {title:'Iniciante — Fundamentos',color:'#555',weeks:'Semanas 1-4',items:[
+        {name:'Postura de guarda',       desc:'Pe dominante atras, joelhos flexionados, maos protegendo o rosto. Base de tudo.'},
+        {name:'Jab',                     desc:'Soco reto com a mao da frente. Rapido, nao compromete o equilibrio. Mantenha o cotovelo abaixado.'},
+        {name:'Cross',                   desc:'Soco reto com a mao de tras com rotacao do quadril. Golpe de poder.'},
+        {name:'Esquiva lateral (slip)',  desc:'Mover a cabeca para o lado ao receber soco reto. Fundamental para nao apanhar.'},
+        {name:'Clinch basico',           desc:'Abracar o oponente proximo, controlar o pescoço e a cintura. Anula o striking adversario.'},
+        {name:'Queda simples (single)',  desc:'Ataque a uma perna: abaixar, agarrar a perna e levantar. Transicao para o chao.'},
+      ]},
+      {title:'Basico — Combinacoes',color:'#2a7a4a',weeks:'Semanas 5-10',items:[
+        {name:'Combinacao Jab-Cross',    desc:'Jab rapido abre a guarda, cross fecha com potencia. Combinacao mais usada no mundo.'},
+        {name:'Jab-Cross-Hook',         desc:'Adicionar gancho esquerdo apos o cross. Ataca angulos diferentes.'},
+        {name:'Teep (chute frontal)',    desc:'Chute com a sola do pe, empurrando o oponente. Controla distancia.'},
+        {name:'Double leg takedown',    desc:'Atacar as duas pernas simultaneamente, joelho no chao, carregar e derrubar.'},
+        {name:'Sprawl (defesa)',         desc:'Ao ser atacado nas pernas: jogar os quadris para baixo e para fora. Principal defesa de queda.'},
+        {name:'Mount (posicao)',         desc:'Ficar montado sobre o oponente no chao, controlando com os joelhos. Posicao dominante.'},
+      ]},
+      {title:'Intermediario — Ground & Pound',color:'#b87c00',weeks:'Semanas 11-20',items:[
+        {name:'Ground and pound basico', desc:'Golpear o oponente no chao a partir da posicao de guarda ou montada.'},
+        {name:'Chave de braco (armbar)', desc:'Hiperextender o cotovelo do oponente travando o braco entre as pernas. Finalizacao.'},
+        {name:'Kimura',                  desc:'Chave de ombro com dois bracos. Pode ser aplicado em pe ou no chao.'},
+        {name:'Rear naked choke (RNC)', desc:'Estrangulamento por tras com o braco. A finalizacao mais comum do MMA.'},
+        {name:'Clinch com joelhadas',   desc:'Do clinch tailandes, puxar a cabeca do oponente e aplicar joelhadas no corpo/cabeca.'},
+        {name:'Cage wrestling',         desc:'Usar a grade para controlar o oponente, mudar de posicao ou escapar de quedas.'},
+      ]},
+      {title:'Avancado — Estrategia completa',color:'#c85000',weeks:'Mes 6+',items:[
+        {name:'Timing de counter',       desc:'Antecipar o ataque adversario e contra-atacar no momento exato do comprometimento dele.'},
+        {name:'Transicoes no chao',      desc:'Mover fluidamente entre guarda, meia-guarda, costas, montada sem perder controle.'},
+        {name:'Leg locks (ataques de perna)', desc:'Heel hook, kneebar, toeholde. Ataques avancados ao joelho e tornozelo.'},
+        {name:'Game plan por adversario',desc:'Analisar o oponente: striker? Grappler? Definir onde lutar e como forcar esse cenario.'},
+        {name:'Condicao para 3-5 rounds',desc:'Treino de HIIT + sparring constante para aguentar ritmo alto por multiplos rounds.'},
+        {name:'Sparring tecnico',        desc:'Lutar com controle, foco em tecnica e nao em poder. Onde tudo se integra.'},
+      ]},
+    ],
+    treinos:[
+      {name:'Shadow Boxing 10min',       desc:'Treinar movimentos no ar, visualizando oponente. Trabalha tecnica e condicionamento.'},
+      {name:'Bag work (saco) 5x2min',   desc:'Golpear o saco com combinacoes reais. Desenvolve potencia e resistencia.'},
+      {name:'Grappling drilling 15min', desc:'Repetir movimentos de queda, escape e posicionamento com parceiro.'},
+      {name:'Sparring 3x3min',          desc:'Combate com parceiro em intensidade controlada. Core do treinamento.'},
+      {name:'Defesas e esquivas 10min', desc:'Praticar slip, roll, weave sistematicamente contra jabs e cruzados.'},
+    ]
+  },
+  muay:{
+    name:'Muay Thai — Arte dos 8 Membros',
+    desc:'A arte marcial mais eficaz em pe. Usa punhos, cotovelos, joelhos e chutes. Originaria da Tailandia.',
+    levels:[
+      {title:'Iniciante — As 8 armas',color:'#555',weeks:'Semanas 1-4',items:[
+        {name:'Postura Muay Thai',       desc:'Pe dominante atras, maos altas, queixo abaixado, cotovelos protegendo as costelas.'},
+        {name:'Chute baixo (teep)',      desc:'Chute circular na coxa do oponente com a canela. Desgasta e abre guarda.'},
+        {name:'Jab e cross',             desc:'Base de striking. Jab como distancia, cross como power shot principal.'},
+        {name:'Roundhouse kick (alto)', desc:'Chute circular com a canela na cabeca ou costelas. O chute simbolo do Muay Thai.'},
+        {name:'Clinch tailandes',        desc:'Agarrar o pescoco do oponente com as duas maos e puxar a cabeca para baixo.'},
+        {name:'Joelhada basica',         desc:'Do clinch, puxar e aplicar joelhada no corpo ou cabeca do oponente.'},
+      ]},
+      {title:'Basico — Cotovelos e joelhos',color:'#2a7a4a',weeks:'Semanas 5-12',items:[
+        {name:'Cotovelo horizontal (sok ti)',desc:'Golpe lateral com a ponta do cotovelo. Corta e nocauteia facilmente.'},
+        {name:'Cotovelo em giro',        desc:'Girar o corpo e golpear com o cotovelo traseiro. Enorme potencia.'},
+        {name:'Joelhada voadora',        desc:'Saltar e aplicar joelhada na cabeca do oponente. Avancada e espetacular.'},
+        {name:'Chute na costela',        desc:'Roundhouse na costela flutuante. Area muito sensivel. Acumula dano.'},
+        {name:'Combinacao jab-cross-chute-baixo', desc:'Abrir com punhos e finalizar com chute na coxa. Muito usada em competicoes.'},
+        {name:'Bloqueio de chute',       desc:'Levantar o joelho e enrijecer a perna para absorver chutes. Tecnica de defesa basica.'},
+      ]},
+      {title:'Intermediario — Clinch avancado',color:'#b87c00',weeks:'Mes 4-8',items:[
+        {name:'Clinch com joelhadas em serie',desc:'Controlar o pescoco e alternar joelhadas rapidas no corpo.'},
+        {name:'Projecao do clinch',      desc:'Usar o clinch para desequilibrar o oponente e projetar no chao.'},
+        {name:'Counter com cotovelo',    desc:'Esquivar de soco e responder imediatamente com cotovelo no rosto.'},
+        {name:'Chute na cabeca girado', desc:'Spinning heel kick — girar 180 graus e golpear com o calcanhar na cabeca.'},
+        {name:'Controle de distancia',   desc:'Usar teep, jab e footwork para manter o oponente onde voce quer.'},
+        {name:'Combinacoes de 5+ golpes',desc:'Encadear punhos, chutes, cotovelos e joelhos em sequencias fluidas.'},
+      ]},
+      {title:'Avancado — Tecnica tailandesa',color:'#c85000',weeks:'Ano 1+',items:[
+        {name:'Timing perfeito',         desc:'Counters precisos, entrar nos buracos da guarda adversaria no timing certo.'},
+        {name:'Cutting (cortar)',        desc:'Mover-se em angulo ao atacar, saindo da linha de retorno do adversario.'},
+        {name:'Wai kru e Ram Muay',     desc:'Ritual tailandes antes da luta. Conexao cultural e espiritual com a arte.'},
+        {name:'Clinch de alto nivel',   desc:'Dominar completamente o clinch: posicionar, joelhar, projetar, defender.'},
+        {name:'Luta tailandesa real',   desc:'Participar de competicoes amadoras. Testar tudo em condicoes reais.'},
+        {name:'Condicao de 5 rounds',   desc:'Treinar para manter o mesmo nivel de tecnica no 5o round que no 1o.'},
+      ]},
+    ],
+    treinos:[
+      {name:'Pular corda 15min',         desc:'Base do condicionamento em Muay Thai. Desenvolve ritmo, agilidade e resistencia.'},
+      {name:'Shadowboxing com chutes',   desc:'Praticar todas as 8 armas no ar, com foco em tecnica.'},
+      {name:'Saco de areia 8x2min',     desc:'Combinacoes completas no saco. Trabalhar potencia e encadeamento.'},
+      {name:'Pad work 5x3min',          desc:'Trabalhar com parceiro nos pads (mitts). Mais especifico e dinamico que o saco.'},
+      {name:'Clinch drilling 15min',    desc:'Entrar, controlar e joelhar com parceiro em ritmo controlado.'},
+    ]
+  },
+  bjj:{
+    name:'BJJ — Brazilian Jiu-Jitsu',
+    desc:'A arte do chao. Dominar e finalizar oponentes maiores usando alavancas e estrangulamentos. Criado pela familia Gracie.',
+    levels:[
+      {title:'Faixa Branca — Sobrevivencia',color:'#dddddd',weeks:'Meses 1-6',items:[
+        {name:'Postura de guarda fechada',desc:'Cruzar os tornozelos nas costas do oponente, controlando a distancia e o quadril.'},
+        {name:'Escapar da montada (trap&roll)',desc:'Prender braco e pe do oponente e rolar para invertir a posicao.'},
+        {name:'Bridge e shrimp',          desc:'Bridge: elevar o quadril. Shrimp: mover o quadril para o lado. Bases de escape.'},
+        {name:'Guarda fechada — basico',  desc:'Da guarda, controlar o oponente, quebrar a postura e tentar finalizacoes.'},
+        {name:'Postura na guarda (top)',  desc:'Como ficar em pe ou ajoelhado dentro da guarda sem cair em finalizacoes.'},
+        {name:'Cross choke da montada',  desc:'Cruzar as maos no colar do adversario e estrangular. Finalizacao basica e eficaz.'},
+      ]},
+      {title:'Faixa Branca Avancado — Passes',color:'#cccccc',weeks:'Meses 6-12',items:[
+        {name:'Passagem de guarda (toreando)',desc:'Girar em torno das pernas do oponente para chegar ao half-guard ou side control.'},
+        {name:'Side control',             desc:'Controle lateral: joelhos no chao, torax no torax, cabeca no chao.'},
+        {name:'Knee on belly',            desc:'Joelho no barriga do oponente. Posicao pesada e desconfortavel para ele.'},
+        {name:'Americana (chave de ombro)',desc:'Chave no ombro em formato de L. Aplicada do side control ou montada.'},
+        {name:'Armbar da guarda',         desc:'Estender o braco do oponente entre as pernas. Finalizacao iconica do BJJ.'},
+        {name:'Triangulo da guarda',      desc:'Usar as pernas para estrangular usando o proprio braco do oponente.'},
+      ]},
+      {title:'Faixa Azul — Posicionamento',color:'#2255cc',weeks:'Ano 1-2',items:[
+        {name:'Back take (pegar as costas)',desc:'Posicionar-se nas costas do oponente. Posicao mais dominante do BJJ.'},
+        {name:'Rear naked choke (RNC)',   desc:'Estrangulamento nas costas com o braco em volta do pescoco.'},
+        {name:'Half guard jogo',          desc:'Usar a meia guarda para criar espaco, entrar por baixo e inverter.'},
+        {name:'Leg drag pass',            desc:'Arrastar as pernas do oponente para o lado e passar a guarda.'},
+        {name:'X-guard',                  desc:'Posicao de guarda invertida debaixo do oponente. Muito eficaz para quedas.'},
+        {name:'Flower sweep',             desc:'Da guarda fechada, usar o proprio momentum do oponente para rolar e reverter.'},
+      ]},
+      {title:'Faixa Roxa+ — Inteligencia',color:'#8822cc',weeks:'Ano 3+',items:[
+        {name:'Leg locks (ataques de perna)',desc:'Heel hook, knee bar, toehold. Devastadores e exigem precisao tecnica.'},
+        {name:'Lapela e tecidos',         desc:'Usar o kimono para criar controles e estrangulamentos criativos.'},
+        {name:'Sistema de jogo proprio', desc:'Desenvolver combinacoes e posicoes favoritas: seu jogo unico.'},
+        {name:'Competicao',               desc:'Participar de campeonatos. Testar o jogo contra desconhecidos.'},
+        {name:'Ensinar',                  desc:'Explicar tecnicas para iniciantes. Solidifica o proprio aprendizado profundamente.'},
+        {name:'Flow rolling',             desc:'Rolar sem competir, praticar transicoes e criatividade em ritmo suave.'},
+      ]},
+    ],
+    treinos:[
+      {name:'Drilling tecnico 20min',    desc:'Repetir movimentos basicos: shrimp, bridge, rolamentos. Construir o corpo para o BJJ.'},
+      {name:'Posicional 4x5min',         desc:'Treinar de uma posicao especifica (ex: guarda) e tentar sair ou finalizar.'},
+      {name:'Rolling (sparring) 5x5min', desc:'Rolar livre com parceiros de diferentes niveis. O coração do treinamento.'},
+      {name:'Tecnica nova com parceiro', desc:'Aprender e repetir 2-3 tecnicas novas com um parceiro cooperativo.'},
+      {name:'Solo drilling 15min',       desc:'Treinar movimentos de solo solo: shrimp, ponte, rolamentos para casa.'},
+    ]
+  },
+  boxe:{
+    name:'Boxe — A Ciencia Doce',
+    desc:'A arte dos punhos. Defesa, ataque, footwork e condicao fisica ao nivel de atleta profissional.',
+    levels:[
+      {title:'Iniciante — Os golpes',color:'#555',weeks:'Semanas 1-4',items:[
+        {name:'Postura ortodoxa/southpaw',desc:'Ortodoxo: pe esquerdo na frente. Southpaw: pe direito. Define todo o jogo.'},
+        {name:'Jab (1)',                  desc:'Soco direto com a mao da frente. Arma mais usada no boxe. Rapido e controlado.'},
+        {name:'Cross (2)',                desc:'Soco direto com a mao de tras. Poder maximo com rotacao de quadril.'},
+        {name:'Hook (3)',                 desc:'Gancho circular pela lateral. Pode ser alto (cabeca) ou baixo (figado).'},
+        {name:'Uppercut (4)',             desc:'Soco de baixo para cima em angulo, visando o queixo. Dentro da guarda.'},
+        {name:'Footwork basico',         desc:'Mover na caixa: avançar, recuar, circular. Nunca cruzar os pes.'},
+      ]},
+      {title:'Basico — Defesa e combinacoes',color:'#2a7a4a',weeks:'Semanas 5-12',items:[
+        {name:'Combinacao 1-2',          desc:'Jab seguido de cross. A combinacao mais fundamental e eficaz do boxe.'},
+        {name:'Combinacao 1-2-3',        desc:'Jab, cross, hook. Ataque de tres angulos diferentes.'},
+        {name:'Slip (esquiva lateral)',  desc:'Mover a cabeca para fora da trajetoria do soco sem recuar.'},
+        {name:'Bob and weave',           desc:'Agachar e mover a cabeca em U ao esquivar de hooks. Entrar por dentro.'},
+        {name:'Parry (redirecionamento)',desc:'Usar a mao aberta para desviar o soco do adversario.'},
+        {name:'Golpe no figado',         desc:'Hook baixo na costela direita do oponente. Extremamente eficaz.'},
+      ]},
+      {title:'Intermediario — Pressao e jab',color:'#b87c00',weeks:'Mes 4-8',items:[
+        {name:'Jab de controle de distancia',desc:'Usar o jab nao para nocautear, mas para medir distancia e irritar.'},
+        {name:'Double jab',              desc:'Dois jabs seguidos antes do cross. Confunde o oponente.'},
+        {name:'Counter (contra-ataque)', desc:'Esquivar e contra-atacar no mesmo movimento. Timing e o segredo.'},
+        {name:'Trabalho de clinch',      desc:'No boxe, usar o clinch para descansar, atrapalhar o ritmo e sobreviver.'},
+        {name:'Combinacoes de 5+ golpes',desc:'Encadear golpes em sequencias que cobrem multiplos angulos.'},
+        {name:'Rolamento sob hooks',     desc:'Bob and weave avancado: girar completamente sob o gancho do oponente.'},
+      ]},
+      {title:'Avancado — O artista',color:'#c85000',weeks:'Ano 1+',items:[
+        {name:'Feints (fintas)',         desc:'Movimento falso para forcar reacao do oponente e abrir espaco.'},
+        {name:'Ritmo variavel',          desc:'Mudar velocidade e frequencia dos ataques para confundir o adversario.'},
+        {name:'Southpaw vs ortodoxo',   desc:'Entender as vantagens geometricas ao lutar com estilos opostos.'},
+        {name:'Controle de pressao',    desc:'Saber quando pressionar, quando recuar e quando circular.'},
+        {name:'Sparring tecnico',        desc:'Lutar com controle total, foco em tecnica. Sem ego.'},
+        {name:'Game plan por oponente', desc:'Analisar estilo do adversario e adaptar o jogo para explorar fraquezas.'},
+      ]},
+    ],
+    treinos:[
+      {name:'Pular corda 15min',         desc:'Condicionamento, ritmo e coordenacao. Boxeadores pulam corda todo dia.'},
+      {name:'Shadow boxing 3x3min',      desc:'Lutar com o espelho: tecnica, footwork e visualizacao do oponente.'},
+      {name:'Saco pesado 6x2min',       desc:'Trabalhar potencia, combinacoes e resistencia no saco.'},
+      {name:'Mitts com parceiro 4x3min',desc:'Trabalhar combinacoes, timing e defesa nos pads com um parceiro.'},
+      {name:'Sparring 3x3min',          desc:'Combate real controlado. O principal meio de evolucao do boxeador.'},
+    ]
+  },
+  judo:{
+    name:'Judo — O Caminho Suave',
+    desc:'Arte de derrubar o oponente usando a forca dele. Olimpico desde 1964. Base para MMA e defesa pessoal.',
+    levels:[
+      {title:'Iniciante — Ukemi (quedas)',color:'#555',weeks:'Semanas 1-4',items:[
+        {name:'Mae ukemi (queda frontal)', desc:'Cair para frente sem bater a cabeca. Fundamental e treinada diariamente.'},
+        {name:'Ushiro ukemi (queda de costas)',desc:'Cair de costas com o braco batendo no chao para amortecer o impacto.'},
+        {name:'Yoko ukemi (queda lateral)',desc:'Cair para o lado. A queda mais comum em projecoes de judo.'},
+        {name:'Postura (Shizentai)',      desc:'Postura natural do judo. Pe na largura dos ombros, relaxado e equilibrado.'},
+        {name:'Kumi-kata (pegada)',       desc:'Agarrar o quimono no ombro e na manga. Primeira habilidade de contato.'},
+        {name:'Tai sabaki (giro)',        desc:'Girar o corpo para entrar nas tecnicas. Base mecanica de todas as projecoes.'},
+      ]},
+      {title:'Basico — Primeiras projecoes',color:'#2a7a4a',weeks:'Semanas 5-16',items:[
+        {name:'O-goshi (quadril maior)', desc:'Projecao pelo quadril: entrar por dentro, carregar e projetar. Classica.'},
+        {name:'Seoi nage (projecao de ombro)',desc:'Carregar o oponente nas costas e projetar pela frente. Muito eficaz.'},
+        {name:'De ashi barai (varredura)',desc:'Varrer o pe avancado do oponente no momento do passo. Timing puro.'},
+        {name:'Osoto gari (grande foice)',desc:'Varrer a perna de tras do oponente com a perna propria. Projecao de poder.'},
+        {name:'Kesa gatame (imobilizacao)',desc:'Imobilizar o oponente no chao segurando o pescoco e o braco.'},
+        {name:'Newaza basico',           desc:'Judo no chao: imobilizacoes, estrangulamentos e chaves de braco.'},
+      ]},
+      {title:'Intermediario — Combinacoes',color:'#b87c00',weeks:'Ano 1-2',items:[
+        {name:'Renzoku waza (combinacoes)',desc:'Encadear tecnicas: se a primeira falha, fluir para a segunda sem perder o impulso.'},
+        {name:'Kaeshi waza (contra-ataques)',desc:'Usar a forca da tentativa de projecao do oponente contra ele mesmo.'},
+        {name:'Uchi komi (repeticions)',  desc:'Repetir a entrada das tecnicas sem finalizar centenas de vezes. Drilling de judo.'},
+        {name:'Estrangulamentos (shime waza)',desc:'Chokes com o quimono: okuri eri jime, hadaka jime. Finalizacoes no chao.'},
+        {name:'Chave de braco (Juji gatame)',desc:'Armbar classico do judo a partir de diversas posicoes. Muito eficaz.'},
+        {name:'Sumi gaeshi',             desc:'Queda sacrificio: cair deliberadamente para projetar o oponente por cima.'},
+      ]},
+      {title:'Avancado — Competicao',color:'#c85000',weeks:'Ano 3+',items:[
+        {name:'Gripping strategy',       desc:'Controlar a pegada para ditar o jogo. Quem controla o kumi-kata controla a luta.'},
+        {name:'Competicao regional',     desc:'Participar de torneios. Testar tecnica contra desconhecidos sob pressao real.'},
+        {name:'Kata (formas)',           desc:'Sequencias formais de tecnicas. Desenvolve precisao, postura e entendimento profundo.'},
+        {name:'Nage no kata',            desc:'As 15 projecoes classicas executadas em pares em forma de demonstracao ritual.'},
+        {name:'Desenvolvimento de tokui waza',desc:'Definir suas 2-3 tecnicas favoritas e domina-las completamente.'},
+        {name:'Randori de alto nivel',   desc:'Randori (sparring) contra judocas de faixas superiores regularmente.'},
+      ]},
+    ],
+    treinos:[
+      {name:'Ukemi 10min',               desc:'Praticar quedas em todas as direcoes antes de qualquer treino.'},
+      {name:'Uchi komi 20min',           desc:'Repetir entradas de tecnicas com parceiro estatico ou em movimento.'},
+      {name:'Nage komi 10min',           desc:'Completar as projecoes com o parceiro caindo. Repetir com ukemi correto.'},
+      {name:'Randori 5x3min',           desc:'Sparring de judo. Tentativas reais com parceiro resistente.'},
+      {name:'Newaza randori 3x5min',    desc:'Randori apenas no chao. Trabalhar imobilizacoes e finalizacoes.'},
+    ]
+  },
+  karate:{
+    name:'Karate — O Caminho da Mao Vazia',
+    desc:'Arte marcial japonica de striking. Socos, chutes, bloqueios e kata. Varios estilos: Shotokan, Kyokushin, Goju-ryu.',
+    levels:[
+      {title:'Iniciante — Kihon (fundamentos)',color:'#555',weeks:'Semanas 1-6',items:[
+        {name:'Postura zenkutsu dachi',  desc:'Postura frontal avancada. Pe da frente dobrado, pe de tras reto. Base do karate.'},
+        {name:'Choku zuki (soco direto)',desc:'Soco reto saindo do quadril com rotacao. Diferente do boxe — sem rotacao de ombro.'},
+        {name:'Age uke (bloqueio alto)', desc:'Bloqueio ascendente para defender a cabeca de socos ou objetos.'},
+        {name:'Gedan barai (bloqueio baixo)',desc:'Varredura descendente para bloquear chutes baixos ou socos ao corpo.'},
+        {name:'Mae geri (chute frontal)',desc:'Chute reto para frente com o peito do pe ou calcanhar. O chute basico.'},
+        {name:'Kiai (grito)',            desc:'Grito explosivo ao executar tecnica. Concentra energia e intimida o oponente.'},
+      ]},
+      {title:'Basico — Kata e Kombinacoes',color:'#2a7a4a',weeks:'Semanas 7-20',items:[
+        {name:'Heian shodan (kata)',      desc:'Primeiro kata do Shotokan. Sequencia de 21 movimentos fundamentais.'},
+        {name:'Gyaku zuki (soco reverso)',desc:'Soco com a mao de tras da postura. O soco de poder do karate.'},
+        {name:'Yoko geri (chute lateral)',desc:'Chute lateral com o calcanhar. Muito poderoso e longo alcance.'},
+        {name:'Mawashi geri (chute circular)',desc:'Chute circular com o colo do pe ou canela. Versao karate do roundhouse.'},
+        {name:'Oi zuki (soco avanando)', desc:'Avanar um passo e socar simultaneamente. Combinacao de movimento e golpe.'},
+        {name:'Kumite basico',           desc:'Combate controlado e semifree. Praticar tecnicas contra parceiro.'},
+      ]},
+      {title:'Intermediario — Bunkai e Kyokushin',color:'#b87c00',weeks:'Ano 1-2',items:[
+        {name:'Bunkai de kata',           desc:'Analisar e aplicar os movimentos do kata em situacoes reais de combate.'},
+        {name:'Full contact (Kyokushin)',desc:'Estilo sem protetor de cabeca, chutes e socos reais ao corpo. Extremamente duro.'},
+        {name:'Ushiro geri (chute de costas)',desc:'Chute para tras com o calcanhar. Exige consciencia espacial.'},
+        {name:'Empi uchi (cotovelo)',     desc:'Golpe de cotovelo para frente, lateral ou para baixo. Devastador em curta distancia.'},
+        {name:'Kombinacoes de 4+ golpes',desc:'Encadear socos, chutes e bloqueios em sequencias de kata-kumite.'},
+        {name:'Shiai (competicao)',       desc:'Participar de torneios de kumite ou kata. Desenvolve pressao e controle.'},
+      ]},
+      {title:'Avancado — Maestria',color:'#c85000',weeks:'Ano 3+',items:[
+        {name:'Kata avancados (Heian Godan+)',desc:'Dominar as series avancadas de kata com precisao e kime (poder de foco).'},
+        {name:'Kime (foco de poder)',    desc:'Concentrar maxima forca num ponto minimo no momento exato do impacto.'},
+        {name:'Tameshiwari (quebra)',     desc:'Quebrar objetos para demonstrar controle e potencia: tabuas, telhas, tijolos.'},
+        {name:'Ensinar e transmitir',    desc:'Tornar-se instrutor. A maestria real vem ao ensinar o proximo.'},
+        {name:'Zanshin (consciencia)',   desc:'Estado de alerta relaxado apos o golpe. Sempre pronto para o proximo movimento.'},
+        {name:'Makiwara (post de golpe)',desc:'Treinar no poste de palha para endurecer os punhos e calibrar o golpe.'},
+      ]},
+    ],
+    treinos:[
+      {name:'Kihon 20min',               desc:'Praticar tecnicas basicas individualmente na linha: socos, chutes, bloqueios.'},
+      {name:'Kata 15min',               desc:'Executar as formas completas, focando em precisao, respiracao e kime.'},
+      {name:'Kumite basico 4x2min',     desc:'Combate controlado com parceiro em distancia e tecnicas especificas.'},
+      {name:'Makiwara e saco 10min',    desc:'Trabalhar potencia e condicao das maos no equipamento.'},
+      {name:'Stretching marcial 10min', desc:'Flexibilidade para chutes altos e postura correta. Essencial no karate.'},
+    ]
+  },
+  wrestling:{
+    name:'Wrestling — Luta Olimpica',
+    desc:'Arte de derrubar e controlar o oponente no chao. Base fundamental do MMA. Greco-romana e livre.',
+    levels:[
+      {title:'Iniciante — Base',color:'#555',weeks:'Semanas 1-4',items:[
+        {name:'Postura de wrestling',    desc:'Agachado, costas retas, braco para frente, joelhos dobrados. Nunca ereto.'},
+        {name:'Penetration step',        desc:'Passo rapido entrando debaixo do oponente. Base de todos os takedowns.'},
+        {name:'Level change',            desc:'Mudar rapido de nivel (altura) para entrar em takedowns sem ser interceptado.'},
+        {name:'Sprawl',                  desc:'Ao ser atacado nas pernas, jogar o quadril para fora e para baixo. Defesa principal.'},
+        {name:'Single leg takedown',     desc:'Atacar e agarrar uma perna, elevar e derrubar. O takedown mais comum no MMA.'},
+        {name:'Double leg takedown',     desc:'Atacar as duas pernas simultaneamente, carregar e derrubar para o lado.'},
+      ]},
+      {title:'Basico — Controle e transicoes',color:'#2a7a4a',weeks:'Semanas 5-16',items:[
+        {name:'High crotch takedown',    desc:'Variacao do single leg atacando a virilha do oponente. Muito eficaz.'},
+        {name:'Fireman carry',           desc:'Carregar o oponente nos ombros e projetar. Exige forca e timing.'},
+        {name:'Neck tie (tie-up)',       desc:'Controlar o pescoco do oponente com o braco para puxar e desequilibrar.'},
+        {name:'Cradle (berco)',          desc:'Imobilizacao: prender a cabeca e um joelho do oponente no chao.'},
+        {name:'Half nelson',             desc:'Controlar o braco e a nuca do oponente para vira-lo no chao.'},
+        {name:'Escape de imobilizacao', desc:'Usar bridge, roll e shrimp para escapar de pins e posicoes de controle.'},
+      ]},
+      {title:'Intermediario — Conter e score',color:'#b87c00',weeks:'Ano 1-2',items:[
+        {name:'Ankle pick',              desc:'Pegar o tornozelo do oponente quando ele esta com o peso na frente e derrubar.'},
+        {name:'Arm drag',                desc:'Puxar o braco do oponente para o lado para expor as costas e entrar em takedown.'},
+        {name:'Duck under',              desc:'Abaixar e passar por baixo do braco do oponente para tomar as costas.'},
+        {name:'Gut wrench',              desc:'Da posicao par terre, abracar o oponente e virar para score.'},
+        {name:'Riding (manter controle)',desc:'Ficar em cima do oponente no chao sem deixa-lo escapar. Arte dentro do wrestling.'},
+        {name:'Counter para sprawl',    desc:'Ao oponente sprawlar, continuar o movimento para ajustar e completar o takedown.'},
+      ]},
+      {title:'Avancado — Elite',color:'#c85000',weeks:'Ano 2+',items:[
+        {name:'Chain wrestling',         desc:'Encadear tentativas: single falhou, imediato para double, falhou para high crotch.'},
+        {name:'Greco-romana',            desc:'Sem ataques abaixo da cintura. Apenas clinch e projecoes pelo tronco superior.'},
+        {name:'Folkstyle (NCAA)',        desc:'Estilo americano universitario com escapes e reversoes pontuadas.'},
+        {name:'Condicao de alta intensidade',desc:'Wrestling e extremamente cansativo. Condicao e o que separa os niveis.'},
+        {name:'Shooting rapido',         desc:'Penetration step com velocidade explosiva: do standing ao single em 0.3 segundos.'},
+        {name:'Competicao',              desc:'Participar de torneios locais. Experiencia real e insubstituivel.'},
+      ]},
+    ],
+    treinos:[
+      {name:'Shot drilling 15min',       desc:'Repetir penetration step sozinho ou com parceiro para construir o reflexo.'},
+      {name:'Pummeling 10min',          desc:'Batalha de controle de mao e clinch com parceiro. Trabalha a garra.'},
+      {name:'Live wrestling 5x2min',    desc:'Sparring real de wrestling com parceiro resistente. O mais importante.'},
+      {name:'Escape drilling 10min',    desc:'Praticar escapar de cradle, half nelson e outros controles.'},
+      {name:'Condicao 10min',           desc:'Agachamentos, explosao e sprints. Wrestling exige atletismo brutal.'},
+    ]
+  },
+  capoeira:{
+    name:'Capoeira — Arte Brasileira',
+    desc:'Arte marcial brasileira criada pelos escravos africanos. Mistura luta, danca, musica e acrobacia.',
+    levels:[
+      {title:'Iniciante — Ginga e golpes basicos',color:'#555',weeks:'Semanas 1-6',items:[
+        {name:'Ginga',                   desc:'Movimento pendular continuo de lado a lado. A base da capoeira. Nunca parar.'},
+        {name:'Au (giro lateral)',        desc:'Roda lateral, como uma estrela. Esquiva e movimento ao mesmo tempo.'},
+        {name:'Bencao (benção)',          desc:'Chute frontal empurrando o oponente. Controla distancia. Simples e eficaz.'},
+        {name:'Martelo',                 desc:'Chute circular horizontal com o colo do pe. Poderoso e rapido.'},
+        {name:'Queda de rins',           desc:'Posicao inverted no chao apoiado no cotovelo. Esquiva e posicao para atacar.'},
+        {name:'Jogo de capoeira',        desc:'Dialogo corporal entre dois capoeiristas ao som do berimbau. O jogo, nao a luta.'},
+      ]},
+      {title:'Basico — Esquivas e acrobacias',color:'#2a7a4a',weeks:'Semanas 7-20',items:[
+        {name:'Gato (esquiva)',           desc:'Desviar da cabeca curvando o tronco para tras rapidamente.'},
+        {name:'Armada',                  desc:'Chute giratório 360 graus com a perna dominante. Golpe elegante e poderoso.'},
+        {name:'Meia lua de frente',      desc:'Chute semicircular de baixo para cima, horizontal. Caracteristico da capoeira.'},
+        {name:'Macaco (acrobacia)',       desc:'Salto para tras com maos no chao, terminando em pe. Foge de ataques baixos.'},
+        {name:'Escorpiao',               desc:'Chute invertido para cima a partir do macaco. Posicao espetacular.'},
+        {name:'Chamada',                 desc:'Gesto de convidar o parceiro para perto. Teste de confianca e jogo mental.'},
+      ]},
+      {title:'Intermediario — Sequencias e musica',color:'#b87c00',weeks:'Ano 1-2',items:[
+        {name:'Parafuso',                desc:'Chute giratório vertical com salto. Exige muito treino e flexibilidade.'},
+        {name:'Boca de calca',           desc:'Pegar a perna do parceiro durante o jogo e desequilibrar. Grappling de capoeira.'},
+        {name:'Tocar berimbau',          desc:'Aprender o instrumento sagrado da capoeira. Define o ritmo e o estilo do jogo.'},
+        {name:'Jogo Angola vs Regional', desc:'Angola: mais lenta, rasteira, filosofica. Regional: mais rapida e poderosa.'},
+        {name:'Rastera',                 desc:'Varredura de perna quando o parceiro esta comprometido em golpe. Timing crucial.'},
+        {name:'Compasso',               desc:'Chute lateral girado a 360 graus. Variacao avancada da armada.'},
+      ]},
+      {title:'Avancado — Mestre',color:'#c85000',weeks:'Ano 3+',items:[
+        {name:'Batizado e troca de corda',desc:'Cerimonia de graduacao. Receber nova corda das maos de um mestre.'},
+        {name:'Jogo com varios parceiros',desc:'Jogar com varios parceiros em sequencia numa roda. Teste de gas e adaptabilidade.'},
+        {name:'Musica completa',         desc:'Cantar ladainhas, tocar pandeiro, atabaque e berimbau. Capoeiro completo.'},
+        {name:'Ensinar na roda',         desc:'Compartilhar a capoeira com iniciantes. O saber so cresce quando compartilhado.'},
+        {name:'Viagens e mestres',       desc:'Treinar com diferentes mestres em diferentes grupos. Ampliar o jogo.'},
+        {name:'Filosofia da capoeira',   desc:'Entender malicia, jogo, axe. A capoeira como caminho de vida, nao apenas luta.'},
+      ]},
+    ],
+    treinos:[
+      {name:'Ginga e esquivas 15min',    desc:'Praticar a ginga continua e as esquivas basicas sem parar.'},
+      {name:'Acrobacias 20min',          desc:'Treinar au, macaco, parafuso progressivamente com seguranca.'},
+      {name:'Jogo em dupla 20min',      desc:'Jogar capoeira real com parceiro ao som do berimbau.'},
+      {name:'Musica 15min',             desc:'Aprender e praticar tocar berimbau e cantar ladainhas.'},
+      {name:'Condicao fisica 15min',    desc:'Fortalecimento de core, quadril e ombros — fundamentais para acrobacias.'},
+    ]
+  }
+};
+
+var LANGUAGES={
+  en:{
+    name:'Ingles — English',
+    flag:'EN',
+    desc:'O idioma global dos negocios, tecnologia e cultura. Dominado por mais de 1.5 bilhao de falantes.',
+    levels:[
+      {title:'A1 — Absoluto Iniciante',color:'#555',weeks:'Semanas 1-8',items:[
+        {name:'Alfabeto e pronuncia',    desc:'Entender sons do ingles que nao existem em portugues: TH, W, short vowels.'},
+        {name:'Numeros e cores',         desc:'1-1000, cores basicas. Pratica oral: "One hundred and fifty-two"'},
+        {name:'Saudacoes essenciais',   desc:'Hello, hi, good morning, how are you, nice to meet you, goodbye, see you.'},
+        {name:'Verbos ser/estar/ter',   desc:'to be (am/is/are), to have. "I am Brazilian. She is happy. They have a car."'},
+        {name:'Presente simples',        desc:'I eat, you drink, he plays. Usar para rotinas: "I wake up at 6am every day."'},
+        {name:'Vocabulario basico 500 palavras',desc:'Corpo humano, familia, casa, comida, transporte. Apps: Duolingo, Anki.'},
+      ]},
+      {title:'A2 — Basico',color:'#2a7a4a',weeks:'Meses 3-6',items:[
+        {name:'Passado simples',         desc:'I went, she ate, they played. Regular: +ed. Irregulares: go/went, eat/ate.'},
+        {name:'Futuro com will e going to',desc:'"I will call you." vs "I am going to travel next week." Diferenca de uso.'},
+        {name:'Perguntas WH',           desc:'What, Where, When, Why, Who, How. "Where do you live? What do you do?"'},
+        {name:'Quantificadores',         desc:'some, any, much, many, a lot of, a few. "There is some milk. Do you have any bread?"'},
+        {name:'Adjetivos e comparacoes', desc:'big/bigger/biggest. good/better/best. "She is taller than me."'},
+        {name:'Listening diario 15min', desc:'Podcasts para iniciantes, BBC Learning English, Easy English no YouTube.'},
+      ]},
+      {title:'B1 — Intermediario',color:'#b87c00',weeks:'Meses 6-12',items:[
+        {name:'Present perfect',         desc:'"I have lived here for 5 years." vs "I lived there in 2010." Diferenca crucial.'},
+        {name:'Condicional (if clauses)',desc:'"If I study hard, I will pass." vs "If I had money, I would travel."'},
+        {name:'Voz passiva',             desc:'"The book was written by her." Muito usado em ingles formal e academico.'},
+        {name:'Phrasal verbs (200 principais)',desc:'give up, look up, turn on, run out of. Sem eles nao soa natural.'},
+        {name:'Conversacao 30min/dia',   desc:'italki, Tandem, HelloTalk. Falar com nativos e o salto mais rapido possivel.'},
+        {name:'Reading de noticias',     desc:'BBC, CNN, The Guardian. Ler 1 artigo por dia em ingles. Vocab em contexto.'},
+      ]},
+      {title:'B2 — Independente',color:'#c85000',weeks:'Ano 1-2',items:[
+        {name:'Ingles academico',        desc:'Escrever essays, reportes. Vocabulario formal, parafrase, coesao de texto.'},
+        {name:'Sotaque e pronuncia',     desc:'American vs British. Reduzir sotaque com shadowing de nativos.'},
+        {name:'Idioms e expressoes',     desc:'"It is raining cats and dogs." Expressoes que traducao literal nao funciona.'},
+        {name:'Assistir sem legendas',   desc:'Series e filmes totalmente em ingles sem legenda. Teste e treino avancado.'},
+        {name:'Writing avancado',        desc:'Emails profissionais, redacoes, artigos. Clareza, objetividade, elegancia.'},
+        {name:'C1/C2 — Fluencia real',  desc:'Certificacoes IELTS, TOEFL, Cambridge. Nivel profissional ou academico.'},
+      ]},
+    ],
+    daily:[
+      {name:'Anki 15min (flashcards)',   desc:'Revisar palavras novas e antigas com espacamento inteligente. O mais eficiente.'},
+      {name:'Listening 20min',           desc:'Podcast, serie ou musica. Treina ouvido e vocabulario em contexto real.'},
+      {name:'Speaking 15min',            desc:'Falar sozinho sobre o dia, praticar com parceiro ou fazer aula no italki.'},
+      {name:'Reading 10min',             desc:'Artigo, livro ou legenda em ingles. Um paragrafo ja faz diferenca.'},
+      {name:'Writing 5min',              desc:'Escrever um diario em ingles. 5 frases sobre o que fez hoje.'},
+    ]
+  },
+  es:{
+    name:'Espanhol — Español',
+    flag:'ES',
+    desc:'480 milhoes de falantes nativos. Proximo do portugues — o mais rapido para brasileiro dominar.',
+    levels:[
+      {title:'A1 — Iniciante',color:'#555',weeks:'Semanas 1-6',items:[
+        {name:'Pronomes e ser/estar',    desc:'"Ser" para identidade, "estar" para estado/localizacao. Diferenca fundamental.'},
+        {name:'Vocabulario cognato',     desc:'Palavras iguais ou similares: information/informacion, important/importante.'},
+        {name:'Presente de indicativo',  desc:'hablar/hablo/hablas/habla. Verbos regulares ER, AR, IR.'},
+        {name:'Genero e numero',         desc:'el/la, los/las. "El libro rojo / La casa blanca." Portugues ajuda muito aqui.'},
+        {name:'Saudacoes e cortesias',   desc:'Buenos dias, por favor, gracias, de nada, lo siento, mucho gusto.'},
+        {name:'Numeros e tempo',         desc:'1-1000 e expressoes de tempo: manana, ayer, siempre, nunca, a veces.'},
+      ]},
+      {title:'A2 — Basico',color:'#2a7a4a',weeks:'Meses 2-5',items:[
+        {name:'Preterito indefinido',    desc:'Equivale ao preterito perfeito: "Ayer fui al mercado. Ella comio pizza."'},
+        {name:'Preterito imperfecto',    desc:'Acoes habituais no passado: "Cuando era nino, jugaba futbol todos los dias."'},
+        {name:'Ser vs estar avancado',   desc:'Contextos mais sutis: "Esta muerta" (estado) vs "Es mortal" (caracteristica).'},
+        {name:'Subjuntivo basico',       desc:'"Quiero que vengas." "Es importante que estudies." O grande desafio do espanhol.'},
+        {name:'Falsos cognatos',         desc:'Borracha (chola de carro) vs embarazada (gravida). Cuidado com os falsos amigos.'},
+        {name:'Dialetos: Mexico, Argentina, Espanha',desc:'Vos/tu, diferentes pronuncias do LL e Y. Exposicao a varios sotaques.'},
+      ]},
+      {title:'B1/B2 — Fluencia',color:'#b87c00',weeks:'Meses 5-12',items:[
+        {name:'Subjuntivo completo',     desc:'Presente, passado, condicional. O que realmente separa os niveis no espanhol.'},
+        {name:'Verbos reflexivos',       desc:'"Me levanto, me ducho, me visto." Sistema diferente do portugues.'},
+        {name:'Expressoes idiomaticas',  desc:'"No hay mal que por bien no venga." Expressoes que nativos usam sempre.'},
+        {name:'Leitura de literatura',   desc:'Ler Gabriel Garcia Marquez, Borges, Mario Vargas Llosa. Vocabulario rico.'},
+        {name:'Conversacao diaria',      desc:'Intercambio com nativos via Tandem, HelloTalk ou aulas no italki.'},
+        {name:'Certificacao DELE',       desc:'Certificacao oficial do Instituto Cervantes. Reconhecida mundialmente.'},
+      ]},
+    ],
+    daily:[
+      {name:'Anki 15min',               desc:'Vocabulario com espacamento inteligente. Foco em phrasal e subjuntivo.'},
+      {name:'Serie em espanhol 20min',  desc:'La Casa de Papel, Club de Cuervos, El Internado. Legenda em espanhol.'},
+      {name:'Pratica de conversa 15min',desc:'HelloTalk, Tandem ou italki com nativos de diferentes paises.'},
+      {name:'Ler em espanhol 10min',    desc:'Noticias BBC Mundo, El Pais, Clarin. Um artigo por dia.'},
+      {name:'Musica latina 10min',      desc:'Analisar letras de musica: entender giriase expressoes.'},
+    ]
+  },
+  jp:{
+    name:'Japones — 日本語',
+    flag:'JP',
+    desc:'Um dos idiomas mais desafiadores para brasileiros. Tres sistemas de escrita. Mas extremamente recompensador.',
+    levels:[
+      {title:'N5 — Iniciante Absoluto',color:'#555',weeks:'Meses 1-4',items:[
+        {name:'Hiragana (46 simbolos)',  desc:'Primeiro alfabeto: a, i, u, e, o, ka, ki... Memorizar e base de tudo. 2-4 semanas.'},
+        {name:'Katakana (46 simbolos)', desc:'Segundo alfabeto: para palavras estrangeiras. Ko-hi- = coffee. 2-4 semanas.'},
+        {name:'Kanji basicos (N5: 100)',desc:'Os 100 kanji essenciais do nivel N5. Agua, sol, lua, pessoa, montanha...'},
+        {name:'Partipulas basicas',     desc:'wa (topico), ga (sujeito), wo (objeto), ni (para/em), de (por meio de).'},
+        {name:'Presente/futuro basico', desc:'"Watashi wa tabemasu" (eu como/comerei). Verbo no final da frase sempre.'},
+        {name:'Numeros e contador',     desc:'ichi/ni/san + sistemas de contagem: hitori/futari (pessoas), hon (objetos longos).'},
+      ]},
+      {title:'N4 — Basico',color:'#2a7a4a',weeks:'Meses 4-10',items:[
+        {name:'250 kanji (N4)',          desc:'Ampliar vocabulario. Usar Anki com deck RTK ou JLPT N4.'},
+        {name:'Forma te e conexoes',     desc:'"tabete kudasai" (por favor coma). Conectar verbos: "tabete nete" (comi e dormi).'},
+        {name:'Passado e negativo',      desc:'"Tabemashita" (comi), "tabemasen deshita" (nao comi). Conjugacoes essenciais.'},
+        {name:'Expressoes de tempo',     desc:'Ashita (amanha), kino (ontem), ima (agora), mada (ainda), mo (ja).'},
+        {name:'Animes e doramas',        desc:'Assistir com legenda em japones. Naruto, Shirokuma Cafe para iniciantes.'},
+        {name:'Apps: WaniKani e BunPro', desc:'WaniKani para kanji, BunPro para gramatica com SRS. Os melhores do mercado.'},
+      ]},
+      {title:'N3 — Intermediario',color:'#b87c00',weeks:'Ano 1-2',items:[
+        {name:'650 kanji (N3)',          desc:'Ler textos basicos, menus, placas. Comecando a ler japoneses reais.'},
+        {name:'Keigo (linguagem formal)',desc:'Diferentes niveis de formalidade japones. Essencial para trabalho e respeito.'},
+        {name:'Listening intensivo',     desc:'Podcasts: JapanesePod101, Nihongo con Teppei. Escutar todos os dias.'},
+        {name:'Shadowing',               desc:'Repetir exatamente o que nativos falam, mesma velocidade e entonacao.'},
+        {name:'Escrita de redacoes',     desc:'Escrever sobre temas simples em japones. 100-200 caracteres por dia.'},
+        {name:'Jlpt N3 — certificacao', desc:'Exame oficial de nivel. Reconhecido para empregos e universidades japonesas.'},
+      ]},
+      {title:'N2/N1 — Avancado',color:'#c85000',weeks:'Ano 2-4',items:[
+        {name:'2000+ kanji',             desc:'Ler manga, livros e noticias sem dicionario. Fluencia de leitura real.'},
+        {name:'Manga sem furigana',      desc:'Ler manga adulto em japones. Teste pratico do nivel avancado.'},
+        {name:'Conversa com nativos',    desc:'italki com professores japoneses. Superar o bloqueio de falar.'},
+        {name:'Trabalho ou estudo no Japao',desc:'O melhor ambiente de imersao. Sem alternativa para fluencia total.'},
+        {name:'JLPT N2 ou N1',          desc:'N2 e suficiente para trabalhar. N1 e o nivel mais alto do exame.'},
+        {name:'Cultura e contexto',      desc:'Sem entender a cultura japonesa, o idioma fica sem alma. Aprender juntos.'},
+      ]},
+    ],
+    daily:[
+      {name:'Anki 20min (kanji)',        desc:'WaniKani ou deck JLPT no Anki. Kanji todo dia sem excecao.'},
+      {name:'Gramatica 15min (BunPro)', desc:'Uma estrutura gramatical nova por dia com exemplos e repeticao.'},
+      {name:'Listening 20min',           desc:'Anime, dorama ou podcast japones. Imersao auditiva constante.'},
+      {name:'Shadowing 10min',           desc:'Repetir frases de nativos exatamente: entonacao, velocidade, pausa.'},
+      {name:'Escrita 5min',              desc:'Praticar escrever kanji do nivel atual a mao. Fixa a memoria.'},
+    ]
+  },
+  zh:{
+    name:'Chines Mandarin — 普通话',
+    flag:'ZH',
+    desc:'O idioma com mais falantes nativos do mundo. Tons e caracteres sao os maiores desafios.',
+    levels:[
+      {title:'HSK1-2 — Iniciante',color:'#555',weeks:'Meses 1-6',items:[
+        {name:'4 tons do mandarim',      desc:'1o plano, 2o subindo, 3o descendo-subindo, 4o descendo. "Ma" = mae/entorpecido/cavalo/brigar.'},
+        {name:'Pinyin (romanizacao)',    desc:'Sistema de transcricao fonetica. Xue (aprender), wo (eu), ni (voce), ta (ele/ela).'},
+        {name:'Radicais de caracter',   desc:'Aprender 50 radicais fundamentais para deduzir significados de novos caracteres.'},
+        {name:'HSK1: 150 palavras',     desc:'Vocabulario minimo: numeros, cores, familia, comida, saudacoes basicas.'},
+        {name:'Estrutura SVO',          desc:'Sujeito-Verbo-Objeto como portugues, mas sem conjugacao verbal. Mais simples.'},
+        {name:'Wo shi, ni shi, ta shi', desc:'"Eu sou, voce e, ele e." Sem conjugacao: o verbo nao muda com o sujeito.'},
+      ]},
+      {title:'HSK3-4 — Basico',color:'#2a7a4a',weeks:'Meses 6-18',items:[
+        {name:'600 caracteres (HSK3)',   desc:'Nivel conversacional basico. Discutir topicos cotidianos com nativos.'},
+        {name:'Meidia da duracao (le/guo)',desc:'Le indica acao completada: "Wo chi le." Guo indica experiencia: "Wo qu guo Beijing."'},
+        {name:'Expressoes de tempo',     desc:'Jintian (hoje), zuotian (ontem), mingtian (amanha), yiqian (antes), yihou (depois).'},
+        {name:'Chines tradicional vs simplificado',desc:'Taiwan usa tradicional, China continental usa simplificado. Escolher o foco.'},
+        {name:'Dramas chineses',         desc:'Love O2O, Nirvana in Fire com legenda em chines. Exposicao auditiva crucial.'},
+        {name:'Pleco (dicionario)',       desc:'O melhor app de dicionario chines. Reconhecimento de caracter pela camera.'},
+      ]},
+      {title:'HSK5-6 — Avancado',color:'#b87c00',weeks:'Ano 2-4',items:[
+        {name:'2500+ caracteres (HSK5)',desc:'Ler jornais, livros, posts de WeChat. Fluencia de leitura.'},
+        {name:'Chengyu (proverbios)',    desc:'Expressoes de 4 caracteres com historia milenares. Essenciais para soar culto.'},
+        {name:'Chines de negocios',     desc:'Vocabulario formal para reunioes, contratos e apresentacoes profissionais.'},
+        {name:'Confianca nos tons',     desc:'Falar sem pensar nos tons. Automatizacao completa do sistema tonico.'},
+        {name:'Imersao na China',        desc:'Viver na China e o jeito mais rapido. Xangai, Beijing, Chengdu.'},
+        {name:'HSK6 — nivel mais alto', desc:'Vocabulario de 5000+ palavras. Equivalente a fluencia universitaria.'},
+      ]},
+    ],
+    daily:[
+      {name:'Anki caracteres 20min',    desc:'Aprender 10-15 caracteres novos por dia com pronuncia e significado.'},
+      {name:'Pratica de tons 10min',    desc:'Gravar a propria voz e comparar com nativos. Tons exigem treinamento auditivo.'},
+      {name:'Podcast chines 15min',     desc:'ChinesePod, Mandarin Corner, HSK podcasts para o nivel atual.'},
+      {name:'Pleco vocabulary 10min',   desc:'Adicionar palavras novas ao dicionario e revisar com SRS integrado.'},
+      {name:'Conversa com nativo 15min',desc:'italki ou HelloTalk com falante de mandarim. Falar e obrigatorio.'},
+    ]
+  },
+  fr:{
+    name:'Frances — Français',
+    flag:'FR',
+    desc:'A lingua da diplomacia, arte e gastronomia. Falado em 29 paises. Segunda lingua mais aprendida do mundo.',
+    levels:[
+      {title:'A1 — Debutant',color:'#555',weeks:'Semanas 1-8',items:[
+        {name:'Pronuncia francesa',      desc:'Sons nasais (an, in, on), r gutural, e mudo no final. Completamente diferente.'},
+        {name:'Articles (le/la/les/un/une)',desc:'Genero no frances e arbitrario: le soleil (sol masc), la lune (lua fem).'},
+        {name:'Etre e avoir',            desc:'"Je suis" (eu sou/estou), "j\'ai" (eu tenho). Os verbos mais usados.'},
+        {name:'Presente dos verbos -er', desc:'parler: je parle, tu parles, il parle. Irregular: les verbes du 3eme groupe.'},
+        {name:'Numeros e expressions',   desc:'1-1000 e expressoes basicas: s\'il vous plait, merci, excusez-moi, bonjour.'},
+        {name:'Vocabulario A1',          desc:'Familia, casa, corpo, cores, comida, transporte. 500 palavras essenciais.'},
+      ]},
+      {title:'A2/B1 — Intermediaire',color:'#2a7a4a',weeks:'Meses 3-10',items:[
+        {name:'Passe compose',           desc:'"J\'ai mange" (eu comi). Avec avoir ou etre. Etre: verbes de mouvement e reflexivos.'},
+        {name:'Imparfait',               desc:'"Je mangeais tous les jours." Acoes habituais ou estados no passado.'},
+        {name:'Pronoms COD et COI',     desc:'"Je le vois." (eu o vejo) "Je lui parle." (eu falo para ele). Posicao antes do verbo.'},
+        {name:'Subjonctif basico',       desc:'"Il faut que tu viennes." Equivale ao subjuntivo portugues mas com mais restricoes.'},
+        {name:'Films et series',         desc:'Le Pate au Beurre d\'Or, Lupin, Emily in Paris. Legendas em frances.'},
+        {name:'Liaisons e elisions',     desc:'les amis = "lez ami". Sons que se conectam entre palavras. Segredo da musicalidade.'},
+      ]},
+      {title:'B2/C1 — Avance',color:'#b87c00',weeks:'Ano 1-2',items:[
+        {name:'Futur anterieur',         desc:'"Quand tu auras fini, appelle-moi." Futuro do futuro. Estrutura avancada.'},
+        {name:'Conditionnel passe',      desc:'"J\'aurais du venir." Eu deveria ter vindo. Expressao de arrependimento.'},
+        {name:'Frances literario',       desc:'Ler Camus, Victor Hugo, Sartre. Vocabulario rico e estilo elevado.'},
+        {name:'Expressoes idiomaticas',  desc:'"Couter les yeux de la tete." Custar os olhos da cara. Frances nao-literal.'},
+        {name:'Certification DELF/DALF', desc:'Certificacao oficial do Ministerio frances. Reconhecida mundialmente.'},
+        {name:'Imersao em Paris',        desc:'Ou Quebec, Marrocos, Senegal. Frances falado mundialmente em contextos distintos.'},
+      ]},
+    ],
+    daily:[
+      {name:'Anki 15min',               desc:'Vocabulario com espacamento. Focar em verbos irregulares e expressoes.'},
+      {name:'Podcast frances 15min',    desc:'Coffee Break French, InnerFrench, RFI Apprendre. Nivel adequado.'},
+      {name:'Leitura 10min',            desc:'Le Monde, L\'Obs, livros didaticos. Um paragrafo com dicionario.'},
+      {name:'Serie/filme 20min',        desc:'Netflix com audio em frances. Comece com legendas em frances.'},
+      {name:'Escrita 5min',             desc:'Diario em frances. Erros sao bons — corrija com LanguageTool.'},
+    ]
+  },
+  de:{
+    name:'Alemao — Deutsch',
+    flag:'DE',
+    desc:'O idioma da engenharia, filosofia e ciencia. Essencial para Europa Central. 100 milhoes de falantes.',
+    levels:[
+      {title:'A1 — Anfanger',color:'#555',weeks:'Semanas 1-8',items:[
+        {name:'Pronuncia alema',         desc:'Umlaut: a, o, u (sons modificados). Ch: suave apos e/i, gutural apos a/o/u.'},
+        {name:'Genero (der/die/das)',    desc:'Tres generos: masculino, feminino, neutro. Arbitrarios — memorizar com cada palavra.'},
+        {name:'Conjugacao basica',      desc:'sein (ser): ich bin, du bist, er ist. haben (ter): ich habe, du hast.'},
+        {name:'Ordem das palavras',     desc:'Verbo sempre na 2a posicao: "Heute gehe ich." Frases subordinadas: verbo no final.'},
+        {name:'Casos (Nominativ/Akkusativ)',desc:'Sujeito usa Nominativ, objeto direto usa Akkusativ. Der→Den para masculino.'},
+        {name:'Saudacoes e cortesias',   desc:'Guten Morgen, bitte, danke, entschuldigung, auf Wiedersehen.'},
+      ]},
+      {title:'A2/B1 — Grundstufe',color:'#2a7a4a',weeks:'Meses 3-10',items:[
+        {name:'Prateritum e Perfekt',    desc:'Prateritum: narrativa. Perfekt: conversacao. "Ich habe gegessen" (comi).'},
+        {name:'Dativ (3o caso)',         desc:'"Mit dem Mann." O 3o caso aparece com preposicoes especificas.'},
+        {name:'Preposicoes de caso',     desc:'an, auf, in (acusativo OU dativo). Dativo: localizacao. Acusativo: movimento.'},
+        {name:'Verbos separaveis',       desc:'"aufmachen" vira "Ich mache die Tur auf." Prefixo vai para o fim da frase.'},
+        {name:'Genitiv (4o caso)',       desc:'"Das Buch des Mannes." Posse formal. Sendo substituido pelo Dativ no dia a dia.'},
+        {name:'Series e podcasts',       desc:'Dark, Babylon Berlin, Deutsche Welle Deutsch lernen. Imersao real.'},
+      ]},
+      {title:'B2/C1 — Fortgeschritten',color:'#b87c00',weeks:'Ano 1-2',items:[
+        {name:'Konjunktiv II',           desc:'"Ich wurde gerne kommen." Gostaria de vir. Hipotese e cortesia formal.'},
+        {name:'Passiv',                  desc:'"Das Buch wird gelesen." O livro e lido. Voz passiva — muito usada em alemao.'},
+        {name:'Compostos infinitos',     desc:'Donaudampfschifffahrtsgesellschaft. Palavras compostas — caracteristica fundamental.'},
+        {name:'Alemao dos negocios',     desc:'Para trabalho na Alemanha/Austria/Suica. Vocabulario tecnico e formal.'},
+        {name:'Certificacao Goethe',     desc:'A1 ate C2. O Goethe-Institut e a certificacao mais reconhecida.'},
+        {name:'Dialetos regionais',      desc:'Bavaro, Suico-alemao, Austriaco. Dificeis mesmo para quem fala alemao padrao.'},
+      ]},
+    ],
+    daily:[
+      {name:'Anki 15min',               desc:'Vocabulario com genero: "der Hund" (cao). Nunca separar palavra do artigo.'},
+      {name:'Podcast alem 15min',       desc:'Slow German, Radio D, Coffee Break German. Nivelado ao aprendiz.'},
+      {name:'Gramatica 10min',          desc:'Um caso gramatical por semana. Alemao exige estudo sistematico.'},
+      {name:'Leitura 10min',            desc:'Sueddeutsche Zeitung, Der Spiegel. Com dicionario no inicio.'},
+      {name:'Serie alema 20min',        desc:'Dark, Tatort, Babylon Berlin. Audio alemao, legendas em alemao.'},
+    ]
+  },
+  it:{
+    name:'Italiano — Italiano',
+    flag:'IT',
+    desc:'A lingua da arte, musica, moda e gastronomia. Proximo do portugues. Bela e musical.',
+    levels:[
+      {title:'A1 — Principiante',color:'#555',weeks:'Semanas 1-6',items:[
+        {name:'Pronuncia italiana',      desc:'Todos os sons sao pronunciados. Mais consistente que portugues.'},
+        {name:'Ser e estar (essere/stare)',desc:'Essere: identidade. Stare: estado/saude. "Come stai?" (como voce esta?)'},
+        {name:'Genero e artigos',        desc:'il/la/i/le + un/una. Similar ao portugues. Genero geralmente intuitivo.'},
+        {name:'Presente indicativo',     desc:'parlare: parlo/parli/parla. Verbos -are, -ere, -ire. Muito similar ao espanhol.'},
+        {name:'Expressoes cotidianas',   desc:'Ciao, buongiorno, prego, grazie, mi dispiace, per favore, arrivederci.'},
+        {name:'Cognatos PT-IT',          desc:'80% das palavras tem raiz latina. Vantagem enorme para lusofanos.'},
+      ]},
+      {title:'A2/B1 — Elementare',color:'#2a7a4a',weeks:'Meses 2-8',items:[
+        {name:'Passato prossimo',        desc:'"Ho mangiato" (comi). Com avere ou essere. Essere: verbos de movimento.'},
+        {name:'Imperfetto',              desc:'"Mangiavo sempre la pizza." Habito ou estado no passado. Igual ao portugues.'},
+        {name:'Pronomi diretti e indiretti',desc:'"Lo vedo" (eu o vejo). "Gli parlo" (falo para ele). Posicao e uso.'},
+        {name:'Congiuntivo presente',    desc:'"Voglio che tu venga." Quero que voce venha. Muito comum no italiano formal.'},
+        {name:'Dialetos regionais',      desc:'Siciliano, veneziano, napolitano. Italianos as vezes nao se entendem.'},
+        {name:'Cinema e series',         desc:'Gomorrah, My Brilliant Friend, Cinema Paradiso. Imersao cultural e linguistica.'},
+      ]},
+      {title:'B2/C1 — Avanzato',color:'#b87c00',weeks:'Ano 1-2',items:[
+        {name:'Congiuntivo passato',     desc:'"Sebbene tu sia venuto, non ho capito." Mesmo tendo vindo, nao entendi.'},
+        {name:'Italiano literario',      desc:'Ler Dante (com auxilio), Calvino, Moravia. O italiano mais rico e antigo.'},
+        {name:'Opera e musica classica', desc:'Entender letras de opera italiana: Puccini, Verdi. Conexao cultural profunda.'},
+        {name:'Certificacao CILS/CELI',  desc:'Certificacoes oficiais italianas reconhecidas para cidadania e estudos.'},
+        {name:'Cidadania italiana',      desc:'Muitos brasileiros tem ascendencia italiana. O italiano abre portas reais.'},
+        {name:'Imersao em Italia',       desc:'Florenca, Roma, Napoles. Cada cidade tem seu sotaque e cultura proprios.'},
+      ]},
+    ],
+    daily:[
+      {name:'Anki 15min',               desc:'Vocabulario com contexto. Focar em verbos irregulares e pronomi.'},
+      {name:'Podcast italiano 15min',   desc:'Coffee Break Italian, News in Slow Italian. Escutar e essencial.'},
+      {name:'Serie italiana 20min',     desc:'Gomorrah, Boris, Il Commissario Montalbano. Imersao real.'},
+      {name:'Leitura 10min',            desc:'La Repubblica, Corriere della Sera. Um artigo com traducao paralela.'},
+      {name:'Cantar em italiano 5min',  desc:'Musica em italiano melhora pronuncia e fixacao de vocabulario.'},
+    ]
+  },
+  ru:{
+    name:'Russo — Русский',
+    flag:'RU',
+    desc:'Sexto idioma mais falado do mundo. Acesso a literatura, ciencia e cultura de um dos paises mais fascinantes.',
+    levels:[
+      {title:'A1 — Начинающий (Iniciante)',color:'#555',weeks:'Meses 1-4',items:[
+        {name:'Alfabeto Cirílico (33 letras)',desc:'Primeiro e mais urgente. 2-3 semanas para ler com fluencia. Muitas letras similares ao grego.'},
+        {name:'Pronuncia russa',         desc:'Sons que nao existem em PT: Ы, Х, Ш, Щ, Ч, Ж. Vogeis reduzidas quando sem acento.'},
+        {name:'Eu sou / Voce e',         desc:'Eu: я. Voce: ты. Sou: — (nao existe no presente!). "Я студент" = Eu sou estudante.'},
+        {name:'Genero (3 generos)',       desc:'Masculino (согласный), feminino (а/я), neutro (о/е). Fundamental para tudo.'},
+        {name:'Caso Nominativo',         desc:'O sujeito da frase. "Это книга" (Isso e um livro). Primeiro dos 6 casos.'},
+        {name:'Numeros e cores',         desc:'1-10: один, два, три, четыре, пять... Cores: красный, синий, зеленый.'},
+      ]},
+      {title:'A2 — Elementarnyy',color:'#2a7a4a',weeks:'Meses 4-12',items:[
+        {name:'Os 6 casos do russo',     desc:'Nominativo, Acusativo, Genitivo, Dativo, Instrumental, Prepositivo. O maior desafio.'},
+        {name:'Aspecto verbal (perfectivo/imperfectivo)',desc:'"Читать vs прочитать." Ler (processo) vs ler completamente. Sem equivalente em PT.'},
+        {name:'Verbos de movimento',     desc:'идти vs ходить (ir a pe, uma vez vs habitualmente). Sistema complexo e unico.'},
+        {name:'Declinacao de adjetivos', desc:'Adjetivos concordam com o substantivo em genero, numero E caso. 24 formas.'},
+        {name:'Presente dos verbos',     desc:'Conjugacao em 6 pessoas: я, ты, он, мы, вы, они. Dois modelos de conjugacao.'},
+        {name:'Apps e recursos',         desc:'Anki com deck russo, Russian With Max (YouTube), Pimsleur para pronuncia.'},
+      ]},
+      {title:'B1/B2 — Intermediate',color:'#b87c00',weeks:'Ano 1-3',items:[
+        {name:'Verbos preposicionados',  desc:'говорить + о (falar sobre), думать + о (pensar em). Cada verbo tem sua preposicao.'},
+        {name:'Literatura russa',        desc:'Tolstoi, Dostoievski, Bulgakov — em russo. O maior tesouro do idioma.'},
+        {name:'Russo coloquial vs formal',desc:'Diferenca entre escrita formal e oral. Муж (marido formal) vs мужик (cara informal).'},
+        {name:'Expressoes idiomaticas',  desc:'"Не в своей тарелке" — sentir-se deslocado. Frances o inventou, russo adotou.'},
+        {name:'TORFL (certificacao)',    desc:'Exame oficial russo. Necessario para universidades e visto de trabalho.'},
+        {name:'Conversa com nativos',    desc:'italki, Speaky. Russos sao receptivos a quem aprende o idioma deles.'},
+      ]},
+    ],
+    daily:[
+      {name:'Cirílico 10min',            desc:'Nos primeiros meses: leitura e escrita do cirílico ate ser totalmente automatico.'},
+      {name:'Anki 20min (casos)',        desc:'Flashcards com frases completas mostrando os casos em contexto.'},
+      {name:'Russian With Max 15min',    desc:'Canal do YouTube especifico para aprendizes. Nivel A1 ao B2.'},
+      {name:'Musica russa 10min',        desc:'Анализировать letras. Musica fixe pronuncia e vocabulario informal.'},
+      {name:'Podcast ou audio 15min',    desc:'Real Russian Club, Russianpod101. Ouvir ate sons ficarem familiares.'},
+    ]
+  }
+};
+
+var _curMartial='mma', _curLang='en';
+
+function switchMartial(art){
+  _curMartial=art;
+  var btns=document.querySelectorAll('#martial-art-tabs .tab-btn');
+  var arts=['mma','muay','bjj','boxe','judo','karate','wrestling','capoeira'];
+  for(var i=0;i<btns.length;i++){
+    if(arts[i]===art)btns[i].classList.add('on');else btns[i].classList.remove('on');
+  }
+  renderMartial(art);
+}
+
+function renderMartial(art){
+  _curMartial=art||_curMartial;
+  var el2=el('martial-content');if(!el2)return;
+  var data=MARTIAL_ARTS[_curMartial];if(!data){el2.innerHTML='';return;}
+  var html='';
+
+  // Header
+  html+='<div class="card" style="margin-bottom:12px;background:linear-gradient(135deg,rgba(0,255,136,.06),rgba(0,229,204,.04))">'
+    +'<div style="font-size:1rem;font-weight:700;margin-bottom:4px">'+data.name+'</div>'
+    +'<div style="font-size:.76rem;color:var(--text3);line-height:1.55">'+data.desc+'</div></div>';
+
+  // Levels
+  data.levels.forEach(function(lv){
+    html+='<div style="margin-bottom:14px">';
+    html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">'
+      +'<div style="width:10px;height:10px;border-radius:50%;background:'+lv.color+';flex-shrink:0"></div>'
+      +'<div style="font-size:.82rem;font-weight:700">'+lv.title+'</div>'
+      +'<div style="font-size:.65rem;color:var(--text3);margin-left:auto;white-space:nowrap">'+lv.weeks+'</div>'
+      +'</div>';
+    lv.items.forEach(function(item){
+      html+='<div class="card card-sm" style="margin-bottom:6px;padding:10px 12px">'
+        +'<div style="font-size:.84rem;font-weight:600;margin-bottom:3px">'+item.name+'</div>'
+        +'<div style="font-size:.72rem;color:var(--text3);line-height:1.45">'+item.desc+'</div>'
+        +'</div>';
+    });
+    html+='</div>';
+  });
+
+  // Treinos
+  html+='<div class="sec-title">Treinos Recomendados</div>';
+  data.treinos.forEach(function(t){
+    html+='<div class="card card-sm" style="margin-bottom:6px;padding:10px 12px;border-color:rgba(0,255,136,.12)">'
+      +'<div style="font-size:.84rem;font-weight:600;color:var(--accent);margin-bottom:3px">'+t.name+'</div>'
+      +'<div style="font-size:.72rem;color:var(--text3);line-height:1.45">'+t.desc+'</div>'
+      +'</div>';
+  });
+
+  el2.innerHTML=html;
+}
+
+function switchLang(lang){
+  _curLang=lang;
+  var btns=document.querySelectorAll('#lang-tabs .tab-btn');
+  var langs=['en','es','jp','zh','fr','de','it','ru'];
+  for(var i=0;i<btns.length;i++){
+    if(langs[i]===lang)btns[i].classList.add('on');else btns[i].classList.remove('on');
+  }
+  renderLang(lang);
+}
+
+function renderLang(lang){
+  _curLang=lang||_curLang;
+  var el2=el('lang-content');if(!el2)return;
+  var data=LANGUAGES[_curLang];if(!data){el2.innerHTML='';return;}
+  var html='';
+
+  // Header
+  html+='<div class="card" style="margin-bottom:12px;background:linear-gradient(135deg,rgba(0,229,204,.06),rgba(0,255,136,.03))">'
+    +'<div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">'
+    +'<div style="font-size:1.4rem;font-weight:900;color:var(--accent2)">'+data.flag+'</div>'
+    +'<div style="font-size:1rem;font-weight:700">'+data.name+'</div></div>'
+    +'<div style="font-size:.76rem;color:var(--text3);line-height:1.55">'+data.desc+'</div></div>';
+
+  // Levels
+  data.levels.forEach(function(lv){
+    html+='<div style="margin-bottom:14px">';
+    html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">'
+      +'<div style="width:10px;height:10px;border-radius:50%;background:'+lv.color+';flex-shrink:0"></div>'
+      +'<div style="font-size:.82rem;font-weight:700">'+lv.title+'</div>'
+      +'<div style="font-size:.65rem;color:var(--text3);margin-left:auto;white-space:nowrap">'+lv.weeks+'</div>'
+      +'</div>';
+    lv.items.forEach(function(item){
+      html+='<div class="card card-sm" style="margin-bottom:6px;padding:10px 12px">'
+        +'<div style="font-size:.84rem;font-weight:600;margin-bottom:3px">'+item.name+'</div>'
+        +'<div style="font-size:.72rem;color:var(--text3);line-height:1.45">'+item.desc+'</div>'
+        +'</div>';
+    });
+    html+='</div>';
+  });
+
+  // Daily routine
+  if(data.daily){
+    html+='<div class="sec-title">Rotina Diaria</div>';
+    data.daily.forEach(function(t){
+      html+='<div class="card card-sm" style="margin-bottom:6px;padding:10px 12px;border-color:rgba(0,229,204,.15)">'
+        +'<div style="font-size:.84rem;font-weight:600;color:var(--accent2);margin-bottom:3px">'+t.name+'</div>'
+        +'<div style="font-size:.72rem;color:var(--text3);line-height:1.45">'+t.desc+'</div>'
+        +'</div>';
+    });
+  }
+
+  el2.innerHTML=html;
 }
 
 // ─────────────────────────────────────────────
